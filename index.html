@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>MEANRedd Prototype</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </head>
+
+  <body>
+      <div class="form-group">
+        <label for="subreddit">Subreddit:</label> <input type="text" id="subreddit" name="subreddit"><br><br>
+        <label for="stopwords">Stop words:</label> <input type="text" id="stopwords" name="stopwords"> <br>
+        <input type="submit" id="submit" class="btn btn-primary">
+      </div>
+      <br/>
+      <h3 id="msg" style="display:none;">Working...</h3>
+
+      <ol id="word_list"></ol>
+  </body>
+
+
+  <script src="stopWords.js"></script>
+  <script src="getData.js"></script>
+  <script>
+    $("#submit").click(function() {
+      let subreddits_raw = $("#subreddit").val()
+      let usr_stop_words_raw = $("#stopwords").val()
+
+      //reset values
+      data = []
+      total_iterations = 0
+      $("#word_list").empty()
+
+      // add users specified stop words
+      if(usr_stop_words_raw) {
+        let usr_stop_words = usr_stop_words_raw.replace(/\s/g,'').split(',')
+        for(word of usr_stop_words)
+          stop_words.add(word)
+        console.log("added stop words: " + usr_stop_words_raw)
+      }
+
+      // start getting data
+      if(subreddits_raw) {
+        $("#msg").css('display','inline')
+        let subreddits = subreddits_raw.replace(/\s/g,'').split(',')
+
+        max_iterations = subreddits.length * maxListings
+        console.log("fetching " + maxListings + " listings")
+
+        subreddits.map( sr =>
+            getPosts(redditURL + sr + defaultParams, '', 0)
+        )
+        console.log("querying: " + subreddits_raw)
+      } else {
+        console.error("no entry")
+      } 
+    });
+
+    function display(results,wordScores) {
+      $("#msg").text("Processed " + data.length + " posts")
+      for(word of results) {
+        let str = '<li><strong>' + word + ':</strong> ' + wordScores[word] + '</li>'
+        $("#word_list").append(str)
+      }
+    }
+
+  </script>
+
+</html>
