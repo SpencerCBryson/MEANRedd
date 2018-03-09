@@ -93,8 +93,9 @@ function getPosts(str, next, i) {
     $.getJSON(url, i, function(result) {
         let next_ = callback(result)
         
-        console.log(total_iterations)
+        //console.log(total_iterations)
         total_iterations++
+        updateCount(total_iterations, max_iterations)
         i++
 
         if(total_iterations == max_iterations) { summarize() }
@@ -103,14 +104,3 @@ function getPosts(str, next, i) {
         }
     });
 }
-
-
-// var subreddits = ["gaming"];
-
-// subreddits.map( sr =>
-//     getPosts(redditURL + sr + defaultParams, '')
-// )
-
-//getPosts(str, '')
-
-
