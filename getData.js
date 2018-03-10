@@ -1,6 +1,6 @@
 var redditURL = "https://www.reddit.com/r/";
 var newParams = "/new.json?limit=100";
-var topParams = "/top/.json?limit=100&t=month";
+var topParams = "/top.json?limit=100&t=month";
 //var str_ = "https://www.reddit.com/r/" + subreddit + "/new.json?limit=100"
 var titles = [];
 
