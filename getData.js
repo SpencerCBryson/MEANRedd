@@ -18,24 +18,32 @@ function postData(post) {
     
     var wordScores_;
 
-    if(content_) {
+    var words = null
+
+    if(content_)
         words = content_.match(ws_pattern)
+    else if (title_)
+        words = title_.match(ws_pattern)
+    
+
+    if(words) {
+        words = words.filter(word => !stop_words.has(word) && isNaN(word))
         
-        if(words) {
-            words = words.filter(word => !stop_words.has(word) && isNaN(word))
-            
-            let counts = words.reduce(function(p,c) {
-                p[c] = (p[c] || 0) + 1;
-                return p;
-            }, {});
+        let counts = words.reduce(function(p,c) {
+            p[c] = (p[c] || 0) + 1;
+            return p;
+        }, {});
 
-            let uWords = Object.keys(counts)
-            let scorePerWord = score_ / uWords.length
+        let uWords = Object.keys(counts)
+        let scorePerWord = score_ / uWords.length
 
-            wordScores_ = uWords.map(function(x, i){return {"word": x, "score": counts[x] + 0.2* scorePerWord}})
+        if(content_) {
+            wordScores_ = uWords.map(function(x, i){return {"word": x, "score": counts[x] + 0.2 * scorePerWord}})
+            console.log(wordScores_)
+        } else if (title_) {
+            wordScores_ = uWords.map(function(x, i){return {"word": x, "score": counts[x] + 0.02 * scorePerWord}})
+            console.log(wordScores_)
         }
-    } else if (title_) {
-        //add a score based on words in title
     }
 
 
