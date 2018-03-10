@@ -12,10 +12,15 @@
 
   <body>
       <div class="form-group">
+      <form action="">
         <label for="subreddit">Subreddit:</label> <input type="text" id="subreddit" name="subreddit"><br><br>
         <label for="stopwords">Stop words:</label> <input type="text" id="stopwords" name="stopwords"> <br>
-        <input type="submit" id="submit" class="btn btn-primary">
+        <div id="radio"><label class="radiobutton-inline"><input type="radio" name="listingtype" value="new" checked> New</label>
+        <label class="radiobutton-inline"><input type="radio" name="listingtype" value="year"> Top (year)</label></div>
+        <br>
+        <input type="button" id="submit" name="submit" value="Submit" class="btn btn-primary" />
       </div>
+    </form>
       <br/>
       <h3 id="msg" style="display:none;">Working...</h3>
 
@@ -58,8 +63,14 @@
         max_iterations = subreddits.length * maxListings
         console.log("fetching " + maxListings + " listings")
 
+        var params
+        if($("#radio input[type='radio']:checked").val() == "new")
+          params = newParams
+        else
+          params = topParams
+
         subreddits.map( sr =>
-            getPosts(redditURL + sr + defaultParams, '', 0)
+            getPosts(redditURL + sr + params, '', 0)
         )
         console.log("querying: " + subreddits_raw)
       } else {

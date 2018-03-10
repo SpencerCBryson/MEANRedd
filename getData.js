@@ -1,5 +1,6 @@
 var redditURL = "https://www.reddit.com/r/";
-var defaultParams = "/new.json?limit=100";
+var newParams = "/new.json?limit=100";
+var topParams = "/top/.json?limit=100/?&t=month";
 //var str_ = "https://www.reddit.com/r/" + subreddit + "/new.json?limit=100"
 var titles = [];
 
@@ -33,6 +34,8 @@ function postData(post) {
 
             wordScores_ = uWords.map(function(x, i){return {"word": x, "score": counts[x] + 0.2* scorePerWord}})
         }
+    } else if (title_) {
+        //add a score based on words in title
     }
 
 
