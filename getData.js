@@ -1,6 +1,6 @@
 var redditURL = "https://www.reddit.com/r/";
 var newParams = "/new.json?limit=100";
-var topParams = "/top/.json?limit=100/?&t=month";
+var topParams = "/top/.json?limit=100&t=month";
 //var str_ = "https://www.reddit.com/r/" + subreddit + "/new.json?limit=100"
 var titles = [];
 
@@ -12,40 +12,44 @@ function postData(post) {
     let id_ = post.data.id
     let title_ = post.data.title.toLowerCase()
     var content_ = post.data.selftext //need to clean content
+    var words = null;
     
     content_ = content_.toLowerCase()
     let score_ = post.data.score
     
     var wordScores_;
 
-    var words = null
-
-    if(content_)
-        words = content_.match(ws_pattern)
-    else if (title_)
-        words = title_.match(ws_pattern)
+    var words = null;
     
+    if(content_) {
+        wordsArr = content_.replace(/[,./?!()*]/g, '').split(' ');
+        words = wordsArr.filter(word => !word.match(/[^a-zA-Z]/g));
+    }
+    else if (title_) {
+        wordsArr = title_.replace(/[,./?!()*]/g, '').split(' ');
+        words = wordsArr.filter(word => !word.match(/[^a-zA-Z]/g));
 
-    if(words) {
-        words = words.filter(word => !stop_words.has(word) && isNaN(word))
-        
-        let counts = words.reduce(function(p,c) {
-            p[c] = (p[c] || 0) + 1;
-            return p;
-        }, {});
-
-        let uWords = Object.keys(counts)
-        let scorePerWord = score_ / uWords.length
-
-        if(content_) {
-            wordScores_ = uWords.map(function(x, i){return {"word": x, "score": counts[x] + 0.2 * scorePerWord}})
-            console.log(wordScores_)
-        } else if (title_) {
-            wordScores_ = uWords.map(function(x, i){return {"word": x, "score": counts[x] + 0.02 * scorePerWord}})
-            console.log(wordScores_)
-        }
+        // console.log(words); console.log(title_);
     }
 
+    words = words.filter(word => !stop_words.has(word) && isNaN(word))
+    
+    let counts = words.reduce(function(p,c) {
+        p[c] = (p[c] || 0) + 1;
+        return p;
+    }, {});
+
+    let uWords = Object.keys(counts)
+    let scorePerWord = score_ / uWords.length
+
+    if(content_) {
+        wordScores_ = uWords.map(function(x, i){return {"word": x, "score": counts[x] + 0.2 * scorePerWord}})
+        // console.log(wordScores_)
+    } else if (title_) {
+        wordScores_ = uWords.map(function(x, i){return {"word": x, "score": counts[x] + 0.02 * scorePerWord}})
+        // console.log(wordScores_)
+    }
+    
 
     return {
         id: id_,
@@ -94,7 +98,7 @@ function summarize() {
 
 var total_iterations = 0
 var max_iterations = 0
-var maxListings = 5
+var maxListings = 100
 
 function getPosts(str, next, i) {
     var url = str;
@@ -102,6 +106,7 @@ function getPosts(str, next, i) {
     if (next) url += "&after=" + next;
 
     $.getJSON(url, i, function(result) {
+        console.log(result)
         let next_ = callback(result)
         
         //console.log(total_iterations)

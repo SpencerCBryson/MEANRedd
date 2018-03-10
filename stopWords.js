@@ -9,6 +9,9 @@
     var stop_words = new Set([
         'http',
         'https',
+        'mc',
+        'sec',
+        'end',
         'reddit',
         'www',
         'com',
