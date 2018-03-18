@@ -1,6 +1,6 @@
 var redditURL = "https://www.reddit.com/r/";
 var newParams = "/new.json?limit=100";
-var topParams = "/top.json?limit=100&t=month";
+var topParams = "/top.json?limit=100&t=year";
 //var str_ = "https://www.reddit.com/r/" + subreddit + "/new.json?limit=100"
 //var titles = [];
 
@@ -8,6 +8,8 @@ var ws_pattern = /\w+'*\w+/g
 
 var data = {}
 var cookedData = {}
+var finished = {}
+var subredditCount = 0
 
 var total_iterations = 0
 var max_iterations = 0
@@ -104,11 +106,16 @@ function summarizeSubReddit(subreddit, iter) {
     summarize(iter)
 }
 
-function summarize(iter) {
-    if(iter != max_iterations)
-        return
-        
+function summarize(iter) {        
     let subreddits = Object.keys(data)
+    let finisedSubreddits = Object.keys(finished)
+    
+//    console.log(subreddits.length)
+    
+    if(finisedSubreddits.length != subredditCount)
+        return
+    else 
+        subreddits.map(sr => console.log(sr + " : " + data[sr].length))
     
     var combined = {
         wordScores : {},
@@ -147,10 +154,11 @@ function getPosts(subreddit, params, next, i) {
         //append data to our list and fetch the
         // ID of the next listing
         let next_ = addData(result,subreddit)
-
+        
         //increase counters to keep track of our progress
         total_iterations++
         i++
+        
         
         //display scraping progress to user
         updateCount(total_iterations, max_iterations)
@@ -158,7 +166,11 @@ function getPosts(subreddit, params, next, i) {
         if (i < maxListings && next_) 
             //keep fetching posts if there is more
             getPosts(subreddit, params, next_, i);
-        else
-            summarizeSubReddit(subreddit, total_iterations)
+        else {
+            finished[subreddit] = true;
+            summarizeSubReddit(subreddit, total_iterations);
+            
+            
+        }
     });
 }
