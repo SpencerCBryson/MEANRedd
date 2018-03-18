@@ -25,8 +25,8 @@
     </form>
     </div>
       <br/>
-      <h3 id="msg" style="display:none;">Working...</h3>
-
+      <h3 id="msg" style="display:none;">Working...</h3><br/>
+      <button class="badge badge-secondary" id="contribs">Toggle contributions</button>
       <ol id="word_list"></ol>
   </body>
 
@@ -34,6 +34,10 @@
 
   <script>
     //for functions that need to exist before the main functionality, i.e. callbacks
+    window.onload = function() {
+        $("#contribs").hide();
+    }  
+    
     function updateCount(count,max) {
       $("#msg").text("Working... (" + count + "/" + max +")")
     }
@@ -99,6 +103,16 @@
             
             str += '</ul></li>';
             $("#word_list").append(str)
+          }
+          
+          $("li > ul").hide()
+          
+          if(Object.keys(cookedData).length > 1) {
+              $("#contribs").show();
+          
+              $("#contribs").click(function() {
+                    $("li > ul").toggle()
+              });
           }
       }
   </script>
