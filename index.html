@@ -22,8 +22,8 @@
         <label class="radiobutton-inline"><input type="radio" name="listingtype" value="year"> Top (year)</label></div>
         <br>
         <input type="button" id="submit" name="submit" value="Submit" class="btn btn-primary" />
-      </div>
     </form>
+    </div>
       <br/>
       <h3 id="msg" style="display:none;">Working...</h3>
 
@@ -71,23 +71,36 @@
           params = newParams
         else
           params = topParams
-
-        subreddits.map( sr =>
-            getPosts(redditURL + sr + params, '', 0)
-        )
+          
+        subreddits.map( subreddit =>
+            getPosts(subreddit, params, '', 0)
+        );
+          
         console.log("querying: " + subreddits_raw)
       } else {
         console.error("no entry")
       } 
     });
 
-    function display(results,wordScores) {
-      $("#msg").text("Processed " + data.length + " posts")
-      for(word of results) {
-        let str = '<li><strong>' + word + ':</strong> ' + wordScores[word] + '</li>'
-        $("#word_list").append(str)
+      function display(results, cookedData, combinedData) {
+          let wordScores = combinedData.wordScores;
+          
+          let postCounts = Object.keys(data).map(sr => data[sr].length )
+          
+          
+          $("#msg").text("Processed " + postCounts.reduce((x,y) => x + y) + " posts");
+
+          for(word of results) {
+            let str = '<li><strong>' + word + ':</strong> ' + wordScores[word] + '<ul>';
+            
+            for(sr of Object.keys(cookedData)) {
+                str += '<li>' + sr + ': ' + cookedData[sr].wordScores[word] + '</li>'
+            }
+            
+            str += '</ul></li>';
+            $("#word_list").append(str)
+          }
       }
-    }
   </script>
 
 </html>
