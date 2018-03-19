@@ -13,7 +13,8 @@ var subredditCount = 0
 
 var total_iterations = 0
 var max_iterations = 0
-var maxListings = 10
+var maxListings = 10;
+var maxPosts = 5;
 
 function postData(post) {
     let id_ = post.data.id
@@ -68,7 +69,7 @@ function addData(result, subreddit) {
 
     var posts = result.data.children
     
-     if(!data[subreddit])
+    if(!data[subreddit])
         data[subreddit] = []
     
     for(post of posts)
@@ -103,10 +104,10 @@ function summarizeSubReddit(subreddit, iter) {
     //wordData["wordCounts"] = wordCounts;
     
     cookedData[subreddit] = wordData
-    summarize(iter)
+    
 }
 
-function summarize(iter) {        
+function summarize() {        
     let subreddits = Object.keys(data)
     let finisedSubreddits = Object.keys(finished)
     
@@ -139,14 +140,91 @@ function summarize(iter) {
     var words = Object.keys(combined.wordScores);
     let result = words.sort((a, b) => combined.wordScores[b] - combined.wordScores[a]);
     
+    console.log('done')
+    
     display(result.slice(0, 20), cookedData, combined)
     
-} 
+}
+
+var parsedComments = 0;
+
+function parseComments(data, subreddit) {
+    var rootComments = data[1].data.children;
+    var wordScores = cookedData[subreddit].wordScores;
+    
+    for (comment of rootComments) {
+        var content_ = comment.data.body;
+        var score_ = comment.data.score;
+        
+        if(content_) {
+            content_ = content_.toLowerCase()
+            //if the comment contains a body
+            wordsArr = content_.replace(/[,./?!()*]/g, '').split(' ')
+            words = wordsArr.filter(word => !word.match(/[^a-zA-Z]/g))
+            
+//            if (content_.match("assaulting")) console.log(content_ + " " + comment.data.id)
+            
+            words = words.filter(word => !stop_words.has(word) && isNaN(word))
+
+            let counts = words.reduce(function(p,c) {
+                p[c] = (p[c] || 0) + 1;
+                return p;
+            }, {});
+
+            let uWords = Object.keys(counts)
+            let scorePerWord = score_ / uWords.length
+
+            if(content_)
+                wordScores_ = uWords.map(function(x, i){return {"word": x, "score": counts[x] + 0.2 * scorePerWord}})
+
+            for (ws of wordScores_) {
+                var word = ws.word;
+                var score = ws.score;
+                
+                if (cookedData[subreddit].wordScores[word])
+                    cookedData[subreddit].wordScores[word] += score;
+                else
+                    cookedData[subreddit].wordScores[word] = score;
+            }
+        }
+    }  
+}
+
+
+function getComments(subreddit, post_id) {
+    var url = redditURL + subreddit + "/comments/" + post_id + ".json";
+    
+//    if ($("#includeComments").prop('checked', false)) return;
+    
+    $.getJSON(url, function(data) {
+        parseComments(data, subreddit);
+        parsedComments++
+        
+        if(data.error) console.log(data.error)
+        
+//        console.log(parsedComments + " " + max_iterations)
+        total_iterations++
+        updateCount(total_iterations, max_iterations)
+        
+        if (parsedComments == max_iterations)
+            summarize();
+    });
+}
+
+var listingCount = 0;
+var maxListingCount;
 
 function getPosts(subreddit, params, next, i) {
     var url = redditURL + subreddit + params;
     
     if (next) url += "&after=" + next;
+    
+    listingCount++;
+    
+    if (total_iterations == 0 && max_iterations == 0)
+        updateCount(listingCount, maxListingCount)
+    else
+        updateCount(total_iterations, max_iterations)
 
     $.getJSON(url, i, function(result) {
         //console.log(result)
@@ -156,21 +234,36 @@ function getPosts(subreddit, params, next, i) {
         let next_ = addData(result,subreddit)
         
         //increase counters to keep track of our progress
-        total_iterations++
+        
         i++
         
         
         //display scraping progress to user
-        updateCount(total_iterations, max_iterations)
+        
 
         if (i < maxListings && next_) 
             //keep fetching posts if there is more
             getPosts(subreddit, params, next_, i);
         else {
+            
             finished[subreddit] = true;
             summarizeSubReddit(subreddit, total_iterations);
             
+//             updateCount(total_iterations, max_iterations)
             
+            if (!$("#includeComments:checked").length){
+                total_iterations++
+                console.log("uncheced")
+                summarize();
+            } else {
+                var posts = data[subreddit];
+                posts = posts.map(p => p.id);
+                
+                console.log("fetching " + posts.length + " posts");
+                
+                max_iterations += posts.length;
+                for (p of posts) getComments(subreddit, p)
+            }
         }
     });
 }
