@@ -11,38 +11,42 @@
   </head>
 
   <body>
-      <div class="alert alert-warning">
-          <strong>Warning!</strong> This tool is in the prototyping stage and does not represent the intended functionality.
+      <div classs="container">
+        <div class="alert alert-warning" role="alert">
+          <h4 class="alert-heading">Warning!</h4>
+          <p>This tool is in the prototyping stage and does not represent the intended functionality.</p>
+          <hr>
+          <p class="mb-0">A high volume of API requests will be sent if you choose to include comments in the data scraping process. You've been warned.</p>
+        </div>
+          <div class="card">
+            <div class="form-group card-body">
+              <form action="">
+                <label for="subreddit">Subreddit(s):</label> <input type="text" id="subreddit" name="subreddit"><br><br>
+                <label for="stopwords">Stop word(s):</label> <input type="text" id="stopwords" name="stopwords"> <br>
+                <div id="radio">
+                    <label class="radiobutton-inline"><input type="radio" name="listingtype" value="new" checked> New</label>
+                    <label class="radiobutton-inline"><input type="radio" name="listingtype" value="year"> Top (year)</label>
+                    <label class="radiobutton-inline"><input type="radio" name="listingtype" value="month"> Top (month)</label>
+                </div>
+                <label class="checkbox-inline"><input id="includeComments"  type="checkbox" name="includeComments" checked=true> Include Comments</label>
+                <br>
+
+                <input type="button" id="submit" name="submit" value="Submit" class="btn btn-primary" />
+            </form>
+            </div>
+          </div>
+
+
+              <br/>
+          
+          <div id="results" class="card card-body">
+              <h3 id="msg" style="display:none;">Working...</h3><br/>
+
+              <button class="btn btn-secondary" id="contribs">Toggle contributions</button><br/>
+              
+              <ol id="word_list" class="list-group"></ol>
+         </div>
       </div>
-      <div class="form-group">
-      <form action="">
-        <label for="subreddit">Subreddit(s):</label> <input type="text" id="subreddit" name="subreddit"><br><br>
-        <label for="stopwords">Stop word(s):</label> <input type="text" id="stopwords" name="stopwords"> <br>
-        <div id="radio"><label class="radiobutton-inline"><input type="radio" name="listingtype" value="new" checked> New</label>
-        <label class="radiobutton-inline"><input type="radio" name="listingtype" value="year"> Top (year)</label></div>
-          <label class="radiobutton-inline"><input id="includeComments" type="checkbox" name="includeComments" checked=true> Include Comments</label>
-        <br>
-        
-        <input type="button" id="submit" name="submit" value="Submit" class="btn btn-primary" />
-    </form>
-    </div>
-    
-    
-      <br/>
-      <h3 id="msg" style="display:none;">Working...</h3><br/>
-    
-<!--
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped" id="post-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-      
-      <div class="progress">
-            <div class="progress-bar progress-bar-striped bg-success" id="comment-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
--->
-    
-      <button class="badge badge-secondary" id="contribs">Toggle contributions</button>
-      <ol id="word_list"></ol>
   </body>
 
 
@@ -51,6 +55,7 @@
     //for functions that need to exist before the main functionality, i.e. callbacks
     window.onload = function() {
         $("#contribs").hide();
+        $("#results").hide()
     }  
     
     function updateCount(count,max) {
@@ -70,8 +75,12 @@
       finished = {};
       cookedData = {};
       total_iterations = 0
-      listingCount = 0;
+      subredditCount = 0
+      listingCount = 0
+      max_iterations = 0
       $("#word_list").empty()
+        
+      $("#results").show()
 
       // add users specified stop words
       if(usr_stop_words_raw) {
@@ -92,8 +101,10 @@
         var params
         if($("#radio input[type='radio']:checked").val() == "new")
           params = newParams
+        else if($("#radio input[type='radio']:checked").val() == "year")
+            params = topParams + 'year'
         else
-          params = topParams
+          params = topParams + 'month'
           
         subredditCount = subreddits.length;
         maxListingCount = subreddits.length * maxListings;
@@ -117,7 +128,7 @@
           $("#msg").text("Processed " + postCounts.reduce((x,y) => x + y) + " posts");
 
           for(word of results) {
-            let str = '<li><strong>' + word + ':</strong> ' + wordScores[word] + '<ul>';
+            let str = '<li class="list-group-item"><strong>' + word + ':</strong> ' + wordScores[word] + '<ul>';
             
             for(sr of Object.keys(cookedData)) {
                 str += '<li>' + sr + ': ' + cookedData[sr].wordScores[word] + '</li>'

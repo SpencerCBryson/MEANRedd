@@ -1,3 +1,8 @@
 body {
     padding: 2em;
 }
+
+#word_list > li {
+    list-style: decimal inside;
+    display: list-item;
+}

@@ -1,6 +1,6 @@
 var redditURL = "https://www.reddit.com/r/";
 var newParams = "/new.json?limit=100";
-var topParams = "/top.json?limit=100&t=year";
+var topParams = "/top.json?limit=100&t=";
 //var str_ = "https://www.reddit.com/r/" + subreddit + "/new.json?limit=100"
 //var titles = [];
 
@@ -47,11 +47,13 @@ function postData(post) {
 
     let uWords = Object.keys(counts)
     let scorePerWord = score_ / uWords.length
+    
+    //Scoring functions need to be re-evaluated
 
     if(content_)
-        wordScores_ = uWords.map(function(x, i){return {"word": x, "score": counts[x] + 0.2 * scorePerWord}})
+        wordScores_ = uWords.map(function(x, i){return {"word": x, "score": (counts[x] * 1.2) + (0.3 * scorePerWord)}})
     else if (title_)
-        wordScores_ = uWords.map(function(x, i){return {"word": x, "score": counts[x] + 0.02 * scorePerWord}})
+        wordScores_ = uWords.map(function(x, i){return {"word": x, "score": (counts[x] * 1.2) + (0.03 * scorePerWord)}})
 
     return {
         id: id_,
@@ -142,7 +144,7 @@ function summarize() {
     
     console.log('done')
     
-    display(result.slice(0, 20), cookedData, combined)
+    display(result.slice(0, 50), cookedData, combined)
     
 }
 
