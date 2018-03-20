@@ -5,6 +5,7 @@
     <title>MEANRedd Prototype</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
+    <script src="https://raw.githubusercontent.com/seiyria/bootstrap-slider/master/dist/bootstrap-slider.min.js"></script>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -55,7 +56,7 @@
                     <label class="radiobutton-inline"><input type="radio" name="listingtype" value="month"> Top (month)</label>
                 </div>
                 <label class="checkbox-inline"><input id="includeComments"  type="checkbox" name="includeComments" checked=true> Include Comments</label>
-                <br>
+                <br><br>
 
                 <input type="button" id="submit" name="submit" value="Submit" class="btn btn-primary" />
             </form>
@@ -126,7 +127,8 @@
         
 
               <br/>
-          
+      <div class="row">   
+        <div class="col-sm-12 col-md-6">
           <div id="results" class="card card-body">
               <h3 id="msg" style="display:none;">Working...</h3><br/>
 
@@ -134,7 +136,19 @@
               
               <ol id="word_list" class="list-group"></ol>
          </div>
+        </div>
+        
+        <div class="col-sm-12 col-md-6">
+            <div id="patternResults" class="card card-body">
+                  <h3 id="patternStatus">Waiting for data...</h3><br/>
+
+    <!--              <button class="btn btn-secondary" id="contribs">Toggle contributions</button><br/>-->
+
+                  <ol id="word_list" class="list-group"></ol>
+             </div>
+        </div>
       </div>
+        </div> 
   </body>
 
 
@@ -143,7 +157,8 @@
     //for functions that need to exist before the main functionality, i.e. callbacks
     window.onload = function() {
         $("#contribs").hide();
-        $("#results").hide()
+        $("#results").hide();
+        $("#patternResults").hide();
     }  
     
     function updateCount(count,max) {
@@ -152,6 +167,7 @@
     }
   </script>
   <script src="stopWords.js"></script>
+  <script src="patternAnalysis.js"></script>
   <script src="getData.js"></script>
   <script>
     $("#submit").click(function() {
@@ -162,6 +178,7 @@
       data = {};
       finished = {};
       cookedData = {};
+      globalWordCounts = {};
       total_iterations = 0
       subredditCount = 0
       listingCount = 0
@@ -169,6 +186,7 @@
       $("#word_list").empty()
         
       $("#results").show()
+      $("#patternResults").show();
 
       // add users specified stop words
       if(usr_stop_words_raw) {

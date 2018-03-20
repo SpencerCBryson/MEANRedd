@@ -42,6 +42,9 @@ function postData(post) {
     
     let counts = words.reduce(function(p,c) {
         p[c] = (p[c] || 0) + 1;
+        
+        // for pattern analysis
+        globalWordCounts[c] = (globalWordCounts[c] || 0) + 1;
         return p;
     }, {});
 
@@ -60,6 +63,7 @@ function postData(post) {
         title: title_,
         score: score_,
         content: content_,
+        words: words,
         reddit: reddit_,
         wordScores: wordScores_,
         wordCounts: counts,
@@ -144,13 +148,17 @@ function summarize() {
     
     console.log('done')
     
-    display(result.slice(0, 50), cookedData, combined)
+    topWordRankings = result.slice(0, 30);
+    
+    display(topWordRankings, cookedData, combined);
+    
+    generateCandidatePairs();
     
 }
 
 var parsedComments = 0;
 
-function parseComments(data, subreddit) {
+function parseComments(data, subreddit, post) {
     var rootComments = data[1].data.children;
     var wordScores = cookedData[subreddit].wordScores;
     
@@ -170,6 +178,9 @@ function parseComments(data, subreddit) {
 
             let counts = words.reduce(function(p,c) {
                 p[c] = (p[c] || 0) + 1;
+                
+                // for pattern analysis
+                globalWordCounts[c] = (globalWordCounts[c] || 0) + 1;
                 return p;
             }, {});
 
@@ -188,21 +199,21 @@ function parseComments(data, subreddit) {
                 else
                     cookedData[subreddit].wordScores[word] = score;
             }
+            
+            post.content = [...post.content, ...words];
         }
     }  
 }
 
 
-function getComments(subreddit, post_id) {
-    var url = redditURL + subreddit + "/comments/" + post_id + ".json";
+function getComments(subreddit, post) {
+    var url = redditURL + subreddit + "/comments/" + post.id + ".json";
     
 //    if ($("#includeComments").prop('checked', false)) return;
     
     $.getJSON(url, function(data) {
-        parseComments(data, subreddit);
+        parseComments(data, subreddit, post);
         parsedComments++
-        
-        if(data.error) console.log(data.error)
         
 //        console.log(parsedComments + " " + max_iterations)
         total_iterations++
@@ -259,7 +270,7 @@ function getPosts(subreddit, params, next, i) {
                 summarize();
             } else {
                 var posts = data[subreddit];
-                posts = posts.map(p => p.id);
+//                posts = posts.map(p => p.id);
                 
                 console.log("fetching " + posts.length + " posts");
                 
