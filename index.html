@@ -12,7 +12,7 @@
   </head>
 
   <body>
-    <div classs="container"> 
+    <div classs="container card-columns"> 
         <div class="row">      
             <div class="col-sm-12 col-md-6">
               <div class="card">
@@ -32,8 +32,10 @@
 
                     <div id="radio">
                         <label class="radiobutton-inline"><input type="radio" name="listingtype" value="new" checked> New</label>
+                        <label class="radiobutton-inline"><input type="radio" name="listingtype" value="hot"> Hot</label>
                         <label class="radiobutton-inline"><input type="radio" name="listingtype" value="year"> Top (year)</label>
                         <label class="radiobutton-inline"><input type="radio" name="listingtype" value="month"> Top (month)</label>
+                        <label class="radiobutton-inline"><input type="radio" name="listingtype" value="week"> Top (week)</label>
                     </div>
 
                     <label class="checkbox-inline"><input class="form-check-label" id="includeComments"  type="checkbox" name="includeComments" checked=true> Include Comments</label>
@@ -69,20 +71,6 @@
                 </div>
             </div>
               <div class="card">
-                <div class="card-header" id="headingTwo">
-                  <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        How do we determine Meaningfulness
-                    </button>
-                  </h5>
-                </div>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-                  <div class="card-body">
-                      Our proposed Meaningfulness score will focus not only on the <code>frequency</code> of a given word over the subreddit, but it will also be scored based on the <code>karma</code> of the post that the word occurs in. This helps distinguish between a common word and a meaningful word.
-                  </div>
-                </div>
-              </div>
-              <div class="card">
                 <div class="card-header" id="headingThree">
                   <h5 class="mb-0">
                     <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
@@ -92,7 +80,8 @@
                 </div>
                 <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
                   <div class="card-body">
-                      <ul>
+                      <h3>How to use</h3>
+                        <ul>
                           <li>Specify a valid subreddit name stub (i.e. <code>spacex</code>)
                               <ul><li>Multiple subreddits are accepted but may be buggy.</li></ul>
                           </li><br/>
@@ -100,10 +89,27 @@
                             <ul><li>A list of common English stop words have already been loaded.</li></ul>
                           <br/>
                           <li>Reddit has a few types of submission listings we can scrape data from: <code>New</code>, <code>Top</code> and <code>Hot</code>. <code>Top</code> can be filtered by day, week, month and year.</li><br/>
-                          <li>Including comments will greatly increase the available data but at the tradeoff of making a large number of API calls to Reddit.</li> 
+                          <li>Including comments will greatly increase the available data but at the tradeoff of making a large number of API calls to Reddit.</li>
+                          <br/>
+                          <li>If no frequent itemsets are found, try lowering the minimum support threshold.</li>
                           <br/>
                           <li>If the tool becomes unresponsive, refresh the page and try again.</li>
                       </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" id="headingTwo">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        How do we determine meaningfulness
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                  <div class="card-body">
+                      <h3>Meaningfulness</h3>
+                      Our proposed meaningfulness score will focus not only on the <code>frequency</code> of a given word over the subreddit, but it will also be scored based on the <code>karma</code> of the post that the word occurs in. This helps distinguish between a common word and a meaningful word.
                   </div>
                 </div>
               </div>
@@ -145,7 +151,7 @@
             </div>
           </div>
       </div>
-        </div> 
+    </div> 
   </body>
 
 

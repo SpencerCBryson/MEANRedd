@@ -35,13 +35,14 @@ $("#submit").click(function() {
     console.log("fetching " + maxListings + " listings")
 
     var params;
-    
-    if($("#radio input[type='radio']:checked").val() == "new")
+    var choice = $("#radio input[type='radio']:checked").val();
+      
+    if(choice == "new")
       params = newParams
-    else if($("#radio input[type='radio']:checked").val() == "year")
-        params = topParams + 'year'
+    else if(choice == "hot")
+      params = hotParams
     else
-      params = topParams + 'month'
+      params = topParams + choice
 
     subredditCount = subreddits.length;
     maxListingCount = subreddits.length * maxListings;
