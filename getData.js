@@ -118,7 +118,7 @@ function summarize() {
     let subreddits = Object.keys(data)
     let finisedSubreddits = Object.keys(finished)
     
-//    console.log(subreddits.length)
+    console.log("summarizing")
     
     if(finisedSubreddits.length != subredditCount)
         return
@@ -147,7 +147,7 @@ function summarize() {
     var words = Object.keys(combined.wordScores);
     let result = words.sort((a, b) => combined.wordScores[b] - combined.wordScores[a]);
     
-    console.log('done')
+    console.log('done summarizing')
     
     topWordRankings = result.slice(0, 30);
     
@@ -216,10 +216,10 @@ function getComments(subreddit, post) {
         parseComments(data, subreddit, post);
         parsedComments++
         
-//        console.log(parsedComments + " " + max_iterations)
         total_iterations++
         updateCount(total_iterations, max_iterations,1)
         
+        //console.log(parsedComments + "/" + max_iterations)
         if (parsedComments == max_iterations)
             summarize();
     });

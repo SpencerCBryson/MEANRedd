@@ -130,6 +130,8 @@ function displayPatterns(frequentSets) {
     var ul = $("#frequent_set_list");
     var min_sup = $("#min_support");
     
+    console.log("Done apriori")
+    
     min_sup.val(support)
     ul.empty()
     
@@ -139,10 +141,9 @@ function displayPatterns(frequentSets) {
     
     for (item of frequentSets) {
         words = item.candidate.reduce((a, b) => String(a) + ', ' + String(b));
-        $(ul).append('<li class="list-group-item">'
-                    + '<strong> ' + words + '</strong><br>'
-                    + 'Frequency: ' + item.frequency
-                    + '</li>');
+        $(ul).append('<li class="list-group-item ellipsis">' + '<strong class="ellipsis-item"> ' + words + '</strong> '
+                    + '<span class="badge badge-primary badge-pill">' + item.frequency
+                    + '</span></li>');
     }
     
     container.append(ul)

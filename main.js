@@ -12,6 +12,8 @@ $("#submit").click(function() {
   listingCount = 0
   max_iterations = 0
   support = 0
+  parsedComments = 0
+    
   $("#frequent_set_list").empty()
   $("#word_list").empty()
   $("#patternResults").hide()
