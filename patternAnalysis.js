@@ -10,7 +10,7 @@
 var globalWordCounts = {}
 var topWordRankings = []
 
-support = 30 // default
+var support = 0 // default
 maxSetSize = 5
 
 function generateCandidatePairs() {
@@ -89,8 +89,10 @@ function apriori() {
         .map(sr => sr.map(post => post.words))
         .reduce((sr1, sr2) => [...sr1, ...sr2]);
     
-    // set support
-    support = baskets.length * 0.05;
+        // set support
+    if (support == 0)
+        support = baskets.length * 0.05;
+    
     k = 0
     
     console.log(support)
@@ -127,20 +129,24 @@ function apriori() {
 
 function displayPatterns(frequentSets) {
     var container = $("#patternResults");
-    var ul = document.createElement("ul");
+    var ul = $("#frequent_set_list");
+    var min_sup = $("#min_support");
     
+    min_sup.val(support)
+    ul.empty()
+    
+    $("#frequent_set_count").html(frequentSets.length)
     
     $("#patternStatus").text("Frequent sets of words");
     
     for (item of frequentSets) {
         words = item.candidate.reduce((a, b) => String(a) + ', ' + String(b));
-        console.log(words)
         $(ul).append('<li class="list-group-item">'
-                    + 'Words: ' + words + '<br>'
+                    + '<strong> ' + words + '</strong><br>'
                     + 'Frequency: ' + item.frequency
                     + '</li>');
     }
     
-    $(ul).addClass("list-group");
-    $(container).append(ul)
+    container.append(ul)
+    container.show();
 }

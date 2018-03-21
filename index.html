@@ -5,148 +5,141 @@
     <title>MEANRedd Prototype</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
-    <script src="https://raw.githubusercontent.com/seiyria/bootstrap-slider/master/dist/bootstrap-slider.min.js"></script>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   </head>
 
   <body>
-    <div classs="container" class="col-12">
-          
-        <div class="row">
+    <div classs="container"> 
+        <div class="row">      
+            <div class="col-sm-12 col-md-6">
+              <div class="card">
+                <div class="form-group card-body">
+                    <p class="h1">MEANRedd</p>
 
-<!--
-        <div class="alert alert-warning" role="alert">
-          <h4 class="alert-heading">Warning!</h4>
-          <p>This tool is in the prototyping stage and does not represent the intended functionality.</p>
-          <hr>
-            <p class="mb-0">A high volume of API requests will be sent if you choose to include comments in the data scraping process. This may be against Reddit's <a href="https://www.reddit.com/wiki/api-terms">terms of use</a>. You've been warned.</p>
-        </div>
-          
-           <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#about" aria-expanded="false" aria-controls="about" style="float:right">
-            About the tool
-          </button>
-          
-          <br/>
-          
-          <div class="collapse" id="about">
-              <br/>
-              <div class="card card-body">
-                <p class="h1">MEANRedd</p>
-                <p></p>
-              </div>
-        </div>
--->
-          
-          <br/>
-          
-          <div class="card col-sm-12 col-md-6">
-            <div class="form-group card-body">
-                <p class="h1">MEANRedd</p>
-                
-                <p class="lead">A <strong>work-in-progress</strong> data visualization tool for discovering meaningful words and emergent topics in a corpus of Reddit submissions.</p>
-                
-              <form action="">
-                <label for="subreddit">Subreddit(s):</label> <input type="text" id="subreddit" name="subreddit"><br><br>
-                <label for="stopwords">Stop word(s):</label> <input type="text" id="stopwords" name="stopwords"> <br>
-                <div id="radio">
-                    <label class="radiobutton-inline"><input type="radio" name="listingtype" value="new" checked> New</label>
-                    <label class="radiobutton-inline"><input type="radio" name="listingtype" value="year"> Top (year)</label>
-                    <label class="radiobutton-inline"><input type="radio" name="listingtype" value="month"> Top (month)</label>
+                    <p class="lead">A <strong>work-in-progress</strong> data visualization tool for discovering meaningful words and emergent topics in a corpus of Reddit submissions.</p>
+
+                  <form action="">
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">/r/</span>
+                      </div>
+                      <input type="text" class="form-control"  id="subreddit" placeholder="your-subreddit-stub">
+                    </div>
+                        <input type="text" class="form-control" id="stopwords" placeholder="Comma, delimited, stop, words"><br/>
+
+                    <div id="radio">
+                        <label class="radiobutton-inline"><input type="radio" name="listingtype" value="new" checked> New</label>
+                        <label class="radiobutton-inline"><input type="radio" name="listingtype" value="year"> Top (year)</label>
+                        <label class="radiobutton-inline"><input type="radio" name="listingtype" value="month"> Top (month)</label>
+                    </div>
+
+                    <label class="checkbox-inline"><input class="form-check-label" id="includeComments"  type="checkbox" name="includeComments" checked=true> Include Comments</label>
+                    <br>
+
+                    <input type="button" id="submit" name="submit" value="Begin" class="btn btn-primary" />
+                </form>
                 </div>
-                <label class="checkbox-inline"><input id="includeComments"  type="checkbox" name="includeComments" checked=true> Include Comments</label>
-                <br><br>
-
-                <input type="button" id="submit" name="submit" value="Submit" class="btn btn-primary" />
-            </form>
+                </div>
             </div>
-          </div>
             
             
             
             <div id="accordion" class="col-sm-12 col-md-6">
-  <div class="card">
-    <div class="card-header" id="headingOne">
-      <h5 class="mb-0">
-        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-          Before you begin
-        </button>
-      </h5>
-    </div>
+              <div class="card">
+                <div class="card-header" id="headingOne">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                      Before you begin
+                    </button>
+                  </h5>
+                </div>
 
-    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-      <div class="card-body">
-        <p>This tool is in the prototyping stage and does not represent the intended functionality.</p>
-       <div class="alert alert-warning" role="alert">
-          <h4 class="alert-heading">Warning!</h4>
-          <hr>
-            <p class="mb-0">A high volume of API requests will be sent if you choose to include comments in the data scraping process. This may be against Reddit's <a href="https://www.reddit.com/wiki/api-terms">terms of use</a>. You've been warned.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-header" id="headingTwo">
-      <h5 class="mb-0">
-        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-            How do we determine Meaningfulness
-        </button>
-      </h5>
-    </div>
-    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-      <div class="card-body">
-          Our proposed Meaningfulness score will focus not only on the <strong>frequency</strong> of a given word over the subreddit, but it will also be scored based on the <strong>karma</strong> of the post that the word occurs in. This helps distinguish between a common word and a meaningful word.
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-header" id="headingThree">
-      <h5 class="mb-0">
-        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-          How to use
-        </button>
-      </h5>
-    </div>
-    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-      <div class="card-body">
-          <ul>
-              <li>Specify a valid subreddit name stub (i.e. <code>spacex</code>)
-                  <ul><li>Multiple subreddits are accepted but may be buggy.</li></ul>
-              </li><br/>
-              <li>Add subreddit specific stop words to refine your results.</li>
-              <li>A list of common English stop words have already been loaded.</li><br/>
-              <li>Reddit has a few types of submission listings we can scrape data from: <code>New</code>, <code>Top</code> and <code>Hot</code>. <code>Top</code> can be filtered by day, week, month and year.</li><br/>
-              <li>Including comments will greatly increase the available data but at the tradeoff of making a large number of API calls to Reddit.</li>
-          </ul>
-      </div>
-    </div>
-  </div>
-</div>
+                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                  <div class="card-body">
+                    <p>This tool is in the prototyping stage and does not represent the intended functionality.</p>
+                   <div class="alert alert-warning" role="alert">
+                      <h4 class="alert-heading">Warning!</h4>
+                      <hr>
+                        <p class="mb-0">A high volume of API requests will be sent if you choose to include comments in the data scraping process. This may be against Reddit's <a href="https://www.reddit.com/wiki/api-terms">terms of use</a>. You have been warned.</p>
+                    </div>
+                  </div>
+                </div>
+            </div>
+              <div class="card">
+                <div class="card-header" id="headingTwo">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        How do we determine Meaningfulness
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                  <div class="card-body">
+                      Our proposed Meaningfulness score will focus not only on the <code>frequency</code> of a given word over the subreddit, but it will also be scored based on the <code>karma</code> of the post that the word occurs in. This helps distinguish between a common word and a meaningful word.
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" id="headingThree">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                      How to use
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                  <div class="card-body">
+                      <ul>
+                          <li>Specify a valid subreddit name stub (i.e. <code>spacex</code>)
+                              <ul><li>Multiple subreddits are accepted but may be buggy.</li></ul>
+                          </li><br/>
+                          <li>Add subreddit specific stop words to refine your results.</li>
+                          <li>A list of common English stop words have already been loaded.</li><br/>
+                          <li>Reddit has a few types of submission listings we can scrape data from: <code>New</code>, <code>Top</code> and <code>Hot</code>. <code>Top</code> can be filtered by day, week, month and year.</li><br/>
+                          <li>Including comments will greatly increase the available data but at the tradeoff of making a large number of API calls to Reddit.</li>
+                      </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
         </div>
         
 
               <br/>
-      <div class="row">   
-        <div class="col-sm-12 col-md-6">
-          <div id="results" class="card card-body">
-              <h3 id="msg" style="display:none;">Working...</h3><br/>
+      <div class="row">  
+          <div class="col-sm-12 col-md-6">
+              <div id="results" class="card card-body">
+                  <h3 id="msg" style="display:none;">Working...</h3><br/>
 
-              <button class="btn btn-secondary" id="contribs">Toggle contributions</button><br/>
-              
-              <ol id="word_list" class="list-group"></ol>
-         </div>
-        </div>
-        
-        <div class="col-sm-12 col-md-6">
-            <div id="patternResults" class="card card-body">
-                  <h3 id="patternStatus">Waiting for data...</h3><br/>
-
-    <!--              <button class="btn btn-secondary" id="contribs">Toggle contributions</button><br/>-->
+                  <button class="btn btn-secondary" id="contribs">Toggle contributions</button><br/>
 
                   <ol id="word_list" class="list-group"></ol>
-             </div>
-        </div>
+                </div>
+          </div>
+          
+          <div class="col-sm-12 col-md-6">
+        
+            <div id="patternResults" class="card card-body">
+                <h3 id="patternStatus">Waiting for data...</h3><br/>
+
+                <div class="row">
+                    <div class="input-group mb-3 col-6">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Min support</span>
+                      </div>
+                      <input type="text" class="form-control" id="min_support">
+                    </div>
+                
+                    <div class="col-6"><button class="btn btn-secondary" id="recompute_apriori">Recompute</button></div>
+                </div>
+                
+                <p>Count: <span id="frequent_set_count"></span></p>
+
+                <ul id="frequent_set_list" class="list-group"></ul>
+            </div>
+          </div>
       </div>
         </div> 
   </body>
@@ -169,91 +162,6 @@
   <script src="stopWords.js"></script>
   <script src="patternAnalysis.js"></script>
   <script src="getData.js"></script>
-  <script>
-    $("#submit").click(function() {
-      let subreddits_raw = $("#subreddit").val()
-      let usr_stop_words_raw = $("#stopwords").val()
-
-      //reset values
-      data = {};
-      finished = {};
-      cookedData = {};
-      globalWordCounts = {};
-      total_iterations = 0
-      subredditCount = 0
-      listingCount = 0
-      max_iterations = 0
-      $("#word_list").empty()
-        
-      $("#results").show()
-      $("#patternResults").show();
-
-      // add users specified stop words
-      if(usr_stop_words_raw) {
-        let usr_stop_words = usr_stop_words_raw.replace(/\s/g,'').split(',')
-        for(word of usr_stop_words)
-          stop_words.add(word)
-        console.log("added stop words: " + usr_stop_words_raw)
-      }
-
-      // start getting data
-      if(subreddits_raw) {
-        $("#msg").css('display','inline')
-        let subreddits = subreddits_raw.replace(/\s/g,'').split(',')
-
-//        max_iterations = subreddits.length * maxListings
-        console.log("fetching " + maxListings + " listings")
-
-        var params
-        if($("#radio input[type='radio']:checked").val() == "new")
-          params = newParams
-        else if($("#radio input[type='radio']:checked").val() == "year")
-            params = topParams + 'year'
-        else
-          params = topParams + 'month'
-          
-        subredditCount = subreddits.length;
-        maxListingCount = subreddits.length * maxListings;
-          
-        subreddits.map( subreddit =>
-            getPosts(subreddit, params, '', 0)
-        );
-          
-        console.log("querying: " + subreddits_raw)
-      } else {
-        console.error("no entry")
-      } 
-    });
-
-      function display(results, cookedData, combinedData) {
-          let wordScores = combinedData.wordScores;
-          
-          let postCounts = Object.keys(data).map(sr => data[sr].length )
-          
-          
-          $("#msg").text("Processed " + postCounts.reduce((x,y) => x + y) + " posts");
-
-          for(word of results) {
-            let str = '<li class="list-group-item"><strong>' + word + ':</strong> ' + wordScores[word] + '<ul>';
-            
-            for(sr of Object.keys(cookedData)) {
-                str += '<li>' + sr + ': ' + cookedData[sr].wordScores[word] + '</li>'
-            }
-            
-            str += '</ul></li>';
-            $("#word_list").append(str)
-          }
-          
-          $("li > ul").hide()
-          
-          if(Object.keys(cookedData).length > 1) {
-              $("#contribs").show();
-          
-              $("#contribs").click(function() {
-                    $("li > ul").toggle()
-              });
-          }
-      }
-  </script>
+  <script src="main.js"></script>
 
 </html>
