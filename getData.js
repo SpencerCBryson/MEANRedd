@@ -217,7 +217,7 @@ function getComments(subreddit, post) {
         
 //        console.log(parsedComments + " " + max_iterations)
         total_iterations++
-        updateCount(total_iterations, max_iterations)
+        updateCount(total_iterations, max_iterations,1)
         
         if (parsedComments == max_iterations)
             summarize();
@@ -235,9 +235,9 @@ function getPosts(subreddit, params, next, i) {
     listingCount++;
     
     if (total_iterations == 0 && max_iterations == 0)
-        updateCount(listingCount, maxListingCount)
+        updateCount(listingCount, maxListingCount,0)
     else
-        updateCount(total_iterations, max_iterations)
+        updateCount(total_iterations, max_iterations,0)
 
     $.getJSON(url, i, function(result) {
         //console.log(result)
@@ -266,11 +266,9 @@ function getPosts(subreddit, params, next, i) {
             
             if (!$("#includeComments:checked").length){
                 total_iterations++
-                console.log("uncheced")
                 summarize();
             } else {
                 var posts = data[subreddit];
-//                posts = posts.map(p => p.id);
                 
                 console.log("fetching " + posts.length + " posts");
                 

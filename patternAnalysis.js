@@ -15,8 +15,6 @@ maxSetSize = 5
 
 function generateCandidatePairs() {
     
-    // for now, we will use top ranked words
-    
     pairs = [];
     
     for (word_x of topWordRankings) {
@@ -135,7 +133,7 @@ function displayPatterns(frequentSets) {
     min_sup.val(support)
     ul.empty()
     
-    $("#frequent_set_count").html(frequentSets.length)
+    $("#frequent_set_count").text(frequentSets.length)
     
     $("#patternStatus").text("Frequent sets of words");
     

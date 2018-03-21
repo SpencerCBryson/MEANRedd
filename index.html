@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   </head>
 
@@ -96,9 +97,12 @@
                               <ul><li>Multiple subreddits are accepted but may be buggy.</li></ul>
                           </li><br/>
                           <li>Add subreddit specific stop words to refine your results.</li>
-                          <li>A list of common English stop words have already been loaded.</li><br/>
+                            <ul><li>A list of common English stop words have already been loaded.</li></ul>
+                          <br/>
                           <li>Reddit has a few types of submission listings we can scrape data from: <code>New</code>, <code>Top</code> and <code>Hot</code>. <code>Top</code> can be filtered by day, week, month and year.</li><br/>
-                          <li>Including comments will greatly increase the available data but at the tradeoff of making a large number of API calls to Reddit.</li>
+                          <li>Including comments will greatly increase the available data but at the tradeoff of making a large number of API calls to Reddit.</li> 
+                          <br/>
+                          <li>If the tool becomes unresponsive, refresh the page and try again.</li>
                       </ul>
                   </div>
                 </div>
@@ -129,7 +133,7 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon1">Min support</span>
                       </div>
-                      <input type="text" class="form-control" id="min_support">
+                      <input type="text" class="form-control" id="min_support" data-toggle="tooltip" title="A low support may result in high computation times">
                     </div>
                 
                     <div class="col-6"><button class="btn btn-secondary" id="recompute_apriori">Recompute</button></div>
@@ -152,11 +156,17 @@
         $("#contribs").hide();
         $("#results").hide();
         $("#patternResults").hide();
+        $('[data-toggle="tooltip"]').tooltip();
     }  
     
-    function updateCount(count,max) {
-      $("#msg").text("Working... (" + count + "/" + max +")");
+    function updateCount(count,max,stage) {
+        var stage_txt;
+        if(stage == 1)
+            stage_txt = "Getting comments...";
+        else
+            stage_txt = "Getting submissions..."
         
+        $("#msg").text(stage_txt + "(" + count + "/" + max +")");
     }
   </script>
   <script src="stopWords.js"></script>

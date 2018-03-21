@@ -61,7 +61,6 @@ $("#recompute_apriori").click(function() {
     generateCandidatePairs();
 });
 
-
   function display(results, cookedData, combinedData) {
       let wordScores = combinedData.wordScores;
 
