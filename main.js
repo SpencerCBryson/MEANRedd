@@ -17,6 +17,7 @@ $("#submit").click(function() {
   $("#frequent_set_list").empty()
   $("#word_list").empty()
   $("#patternResults").hide()
+  $("#countMsg").hide();
 
   $("#results").show()
 
@@ -61,6 +62,7 @@ $("#submit").click(function() {
 
 $("#recompute_apriori").click(function() {
     support = $("#min_support").val()
+    $("#countMsg").hide();
     generateCandidatePairs();
 });
 

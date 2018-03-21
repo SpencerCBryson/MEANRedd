@@ -135,6 +135,9 @@ function displayPatterns(frequentSets) {
     min_sup.val(support)
     ul.empty()
     
+    if(frequentSets.length == 0)
+        $("#countMsg").show()
+        
     $("#frequent_set_count").text(frequentSets.length)
     
     $("#patternStatus").text("Frequent sets of words");

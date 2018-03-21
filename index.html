@@ -145,6 +145,10 @@
                     <div class="col-6"><button class="btn btn-secondary" id="recompute_apriori">Recompute</button></div>
                 </div>
                 
+                <div class="alert alert-primary" role="alert" id="countMsg">
+                    No frequent sets found, try lowering the minimum support.
+                </div>
+                
                 <p>Count: <span id="frequent_set_count"></span></p>
 
                 <ul id="frequent_set_list" class="list-group"></ul>
@@ -163,6 +167,7 @@
         $("#results").hide();
         $("#patternResults").hide();
         $('[data-toggle="tooltip"]').tooltip();
+        $("#countMsg").hide();
     }  
     
     function updateCount(count,max,stage) {
