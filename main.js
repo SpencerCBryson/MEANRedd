@@ -18,6 +18,8 @@ $("#submit").click(function() {
   $("#word_list").empty()
   $("#patternResults").hide()
   $("#countMsg").hide();
+  $("#graphInfo").hide();
+
 
   $("#results").show()
 
@@ -66,8 +68,47 @@ $("#recompute_apriori").click(function() {
     generateCandidatePairs();
 });
 
+
+$("#drawGraph").click(function() {
+    var node_map = {};
+  
+    var edges = []
+    var nodes = []
+    
+    
+    for(edge of edgeList) {
+        let pair = edge.candidate
+
+        // fetch nodes
+        for(word of pair) {
+            if(!(word in node_map)) {
+                  node_map[word] = wordScores[word]
+            }
+        }
+      
+        let edge_data = {
+            "source": pair[0],
+            "target": pair[1],
+            "value": edge.frequency
+        };
+      
+      edges.push(edge_data)
+    }
+  
+  for(node of Object.keys(node_map)) {
+    let node_data = { id: node,
+                      value: node_map[node]};
+    nodes.push(node_data)
+    
+  }
+    
+  let graph = { nodes: nodes, links: edges }
+  
+  drawGraph(graph)
+});
+
   function display(results, cookedData, combinedData) {
-      let wordScores = combinedData.wordScores;
+      wordScores = combinedData.wordScores;
 
       let postCounts = Object.keys(data).map(sr => data[sr].length )
 
@@ -75,7 +116,7 @@ $("#recompute_apriori").click(function() {
       $("#msg").text("Processed " + postCounts.reduce((x,y) => x + y) + " posts");
 
       for(word of results) {
-        let str = '<li class="list-group-item"><strong>' + word + ':</strong> ' + wordScores[word] + '<ul>';
+        let str = '<li class="list-group-item"><strong>' + word + ':</strong> ' + (wordScores[word]).toFixed(2) + '<ul>';
 
         for(sr of Object.keys(cookedData)) {
             str += '<li>' + sr + ': ' + cookedData[sr].wordScores[word] + '</li>'

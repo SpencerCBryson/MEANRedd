@@ -112,7 +112,8 @@ function apriori() {
         
         candidates = candidates.filter(c => c.frequency > support)
         
-        frequentSets = maximalPrune(frequentSets, candidates);
+		//TODO: add this back for pruning output
+        //frequentSets = maximalPrune(frequentSets, candidates);
         
         candidates.map(c => frequentSets.push(c))
         
@@ -121,7 +122,8 @@ function apriori() {
         
         k++;
     }
-    
+	
+    graphData(frequentSets.filter(a => a.candidate.length == 2));
     displayPatterns(frequentSets);
 }
 
@@ -151,4 +153,5 @@ function displayPatterns(frequentSets) {
     
     container.append(ul)
     container.show();
+    $("#graphInfo").show()
 }

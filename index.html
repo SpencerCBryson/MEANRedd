@@ -155,6 +155,22 @@
             </div>
           </div>
       </div>
+	
+		<br/>
+		<div class="row" id="graphInfo">
+			<div class="col-12">
+				<div class="card card-body">
+					<button class="btn btn-primary" id="drawGraph">
+						Draw Network
+					</button>
+				</div>
+			</div>
+		</div>
+      
+    <div class="row">
+      <svg width="960" height="600"></svg>
+    </div>
+		
     </div> 
   </body>
 
@@ -168,6 +184,7 @@
         $("#patternResults").hide();
         $('[data-toggle="tooltip"]').tooltip();
         $("#countMsg").hide();
+        $("#graphInfo").hide();
     }  
     
     function updateCount(count,max,stage) {
@@ -179,10 +196,20 @@
         
         $("#msg").text(stage_txt + "(" + count + "/" + max +")");
     }
+	  
+	var edgeList;
+	  
+	function graphData(edges) {
+		edgeList = edges
+    
+    console.log(edges)    
+		console.log("Received " + edgeList.length + " edges")
+	}
   </script>
   <script src="stopWords.js"></script>
   <script src="patternAnalysis.js"></script>
   <script src="getData.js"></script>
+  <script src="forcedirected.js"></script>
   <script src="main.js"></script>
 
 </html>

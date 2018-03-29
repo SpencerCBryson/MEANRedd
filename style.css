@@ -2,14 +2,26 @@ body {
     padding: 2em;
 }
 
+#word_list {
+	max-height:20em;
+    overflow-y:auto;  
+}
+
+#frequent_set_list {
+	max-height:16em;
+    overflow-y:auto; 
+}
+
 #word_list > li {
     list-style: decimal inside;
     display: list-item;
 }
 
 .ellipsis {
+/*
     display: -webkit-flex;
     display: flex;
+*/
 }
 .ellipsis .ellipsis-item {
     -webkit-flex: 1;
@@ -20,4 +32,14 @@ body {
 }
 .ellipsis .badge {
     margin: 1px 0 1px 4px;
+}
+
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+.nodes circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
 }
