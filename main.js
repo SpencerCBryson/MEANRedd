@@ -34,13 +34,13 @@ $("#submit").click(function() {
   // start getting data
   if(subreddits_raw) {
     $("#msg").css('display','inline')
-    let subreddits = subreddits_raw.replace(/\s/g,'').split(',')
+    subreddits = subreddits_raw.replace(/\s/g,'').split(',')
 
 //        max_iterations = subreddits.length * maxListings
     console.log("fetching " + maxListings + " listings")
 
     var params;
-    var choice = $("#radio input[type='radio']:checked").val();
+    choice = $("#radio input[type='radio']:checked").val();
       
     if(choice == "new")
       params = newParams
@@ -104,15 +104,26 @@ $("#drawGraph").click(function() {
     
   let graph = { nodes: nodes, links: edges }
   
-  drawGraph(graph)
+  $("#currentGraph").empty();
+  
+  $("#currentGraph").append("<div id=\"graphTitle\"><strong>"+subreddits[0]+"</strong>: "+choice+"</div>");
+  
+  drawGraph(graph);
 });
 
 $("#saveGraph").click(function() {
     var savedGraph = $("#savedGraph");
     var svgcopy = $("#currentsvg").clone();
+    var titlecopy = $("#graphTitle").clone();
   
     savedGraph.empty();
+    savedGraph.append(titlecopy);
     savedGraph.append(svgcopy);
+});
+
+$("#clearGraph").click(function() {
+    $("#savedGraph").empty();
+    $("#currentGraph").empty();
 });
 
   function display(results, cookedData, combinedData) {

@@ -5,23 +5,22 @@ var currentDiv = document.getElementById("currentGraph")
 var width = currentDiv.clientWidth,
     height = 600;
 
-
-var svg = d3.select(currentDiv)
-              .append("svg")
-                .attr("width",width)
-                .attr("height",height)
-                .attr("id","currentsvg");
-
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
 var simulation = d3.forceSimulation()
     .force("link", d3.forceLink()
            .id(function(d) { return d.id; })
            .distance(100))
-    .force("charge", d3.forceManyBody().strength(-15))
+    .force("charge", d3.forceManyBody())
     .force("center", d3.forceCenter(width / 2, height / 2));
 
 function drawGraph(graph) {
+  var svg = d3.select(currentDiv)
+              .append("svg")
+                .attr("width",width)
+                .attr("height",height)
+                .attr("id","currentsvg");
+  
   svg.selectAll("line")
       .remove();
   
