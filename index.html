@@ -158,17 +158,24 @@
 	
 		<br/>
 		<div class="row" id="graphInfo">
-			<div class="col-12">
-				<div class="card card-body">
-					<button class="btn btn-primary" id="drawGraph">
-						Draw Network
-					</button>
+			<div class="col-12">        
+          <h3>Meaningful Word Network</h3>
+          <div class="btn-group btn-group-lg" role="group">
+              <button class="btn btn-primary" id="drawGraph">
+						    Draw Network
+					     </button>
+              <button class="btn btn-primary" id="saveGraph">
+                Take Snapshot
+              </button>
+          </div>
 				</div>
-			</div>
 		</div>
       
     <div class="row">
-      <svg width="960" height="600"></svg>
+      <div id="currentGraph" class="col-sm-12 col-md-6">
+      </div>
+      <div id="savedGraph" class="col-sm-12 col-md-6">
+      </div>
     </div>
 		
     </div> 
@@ -211,5 +218,4 @@
   <script src="getData.js"></script>
   <script src="forcedirected.js"></script>
   <script src="main.js"></script>
-
 </html>

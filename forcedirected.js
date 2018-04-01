@@ -1,24 +1,42 @@
-// Thank you Mike Bostock :)
+// Based off of Mike Bostocks force directed graph example
 
-var svg = d3.select("svg"),
-    width = +svg.attr("width"),
-    height = +svg.attr("height");
+var currentDiv = document.getElementById("currentGraph")
+
+var width = currentDiv.clientWidth,
+    height = 600;
+
+
+var svg = d3.select(currentDiv)
+              .append("svg")
+                .attr("width",width)
+                .attr("height",height)
+                .attr("id","currentsvg");
 
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
 var simulation = d3.forceSimulation()
     .force("link", d3.forceLink()
            .id(function(d) { return d.id; })
-           .strength(0.5))
-    .force("charge", d3.forceManyBody())
+           .distance(100))
+    .force("charge", d3.forceManyBody().strength(-15))
     .force("center", d3.forceCenter(width / 2, height / 2));
 
 function drawGraph(graph) {
   svg.selectAll("line")
       .remove();
   
-  svg.selectAll("circle")
+//  svg.selectAll("circle")
+//      .remove();
+  
+  svg.selectAll("text")
       .remove();
+  
+  var graph_meaningful = graph.nodes.map(node => node.value);
+    
+  
+  var fontsize = d3.scaleLinear()
+                    .domain(d3.extent(graph_meaningful))
+                    .range([12,48])
   
   var link = svg.append("g")
       .attr("class", "links")
@@ -29,19 +47,22 @@ function drawGraph(graph) {
 
   var node = svg.append("g")
       .attr("class", "nodes")
-    .selectAll("circle")
+    .selectAll("text")
     .data(graph.nodes)
-    .enter().append("circle")
-      .attr("r", 7)
-      //.attr("fill", function(d) { return color(d.group); })
+    .enter().append("text")
+      //.attr("r", 7)
+      .text(function(d) { return d.id; })
+      //.("fill", function(d) { return color(d.group); })
+      .style("font-size", d => fontsize(d.value))
       .call(d3.drag()
           .on("start", dragstarted)
           .on("drag", dragged)
           .on("end", dragended));
+  
+  console.log(+svg.attr("width"))
 
   node.append("title")
-      .text(function(d) { return d.id; });
-
+      .text(function(d) { return d.id; })
   simulation
       .nodes(graph.nodes)
       .on("tick", ticked);
@@ -58,9 +79,11 @@ function drawGraph(graph) {
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
 
+    let offset = 8;
+    
     node
-        .attr("cx", function(d) { return d.x; })
-        .attr("cy", function(d) { return d.y; });
+        .attr("dx", function(d) { return d.x = Math.max(offset,Math.min(+svg.attr("width")-offset, d.x));})
+        .attr("dy", function(d) { return d.y = Math.max(offset, Math.min(+svg.attr("height")-offset, d.y)); });
   }
 }
 

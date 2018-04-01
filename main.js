@@ -107,6 +107,14 @@ $("#drawGraph").click(function() {
   drawGraph(graph)
 });
 
+$("#saveGraph").click(function() {
+    var savedGraph = $("#savedGraph");
+    var svgcopy = $("#currentsvg").clone();
+  
+    savedGraph.empty();
+    savedGraph.append(svgcopy);
+});
+
   function display(results, cookedData, combinedData) {
       wordScores = combinedData.wordScores;
 
