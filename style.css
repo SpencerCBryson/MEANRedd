@@ -4,12 +4,12 @@ body {
 
 #word_list {
 	max-height:20em;
-    overflow-y:auto;  
+    overflow-y:auto;
 }
 
 #frequent_set_list {
 	max-height:16em;
-    overflow-y:auto; 
+    overflow-y:auto;
 }
 
 #word_list > li {
@@ -42,4 +42,17 @@ body {
 .nodes circle {
   stroke: #fff;
   stroke-width: 1.5px;
+}
+
+#results {
+  height: 500px;
+}
+
+#topWords {
+  height: 1000px;
+  overflow: auto !important;
+}
+
+.tick text{
+  font-size: 14px;
 }

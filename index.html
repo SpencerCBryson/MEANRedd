@@ -12,8 +12,8 @@
   </head>
 
   <body>
-    <div classs="container card-columns"> 
-        <div class="row">      
+    <div classs="container card-columns">
+        <div class="row">
             <div class="col-sm-12 col-md-6">
               <div class="card">
                 <div class="form-group card-body">
@@ -46,9 +46,9 @@
                 </div>
                 </div>
             </div>
-            
-            
-            
+
+
+
             <div id="accordion" class="col-sm-12 col-md-6">
               <div class="card">
                 <div class="card-header" id="headingOne">
@@ -115,22 +115,23 @@
               </div>
             </div>
         </div>
-        
+
 
               <br/>
-      <div class="row">  
+      <div class="row">
           <div class="col-sm-12 col-md-6">
               <div id="results" class="card card-body">
                   <h3 id="msg" style="display:none;">Working...</h3><br/>
 
                   <button class="btn btn-secondary" id="contribs">Toggle contributions</button><br/>
-
+                  <div id="topWords">
                   <ol id="word_list" class="list-group"></ol>
+                  </div>
                 </div>
           </div>
-          
+
           <div class="col-sm-12 col-md-6">
-        
+
             <div id="patternResults" class="card card-body">
                 <h3 id="patternStatus">Waiting for data...</h3><br/>
 
@@ -141,24 +142,24 @@
                       </div>
                       <input type="text" class="form-control" id="min_support" data-toggle="tooltip" title="A low support may result in high computation times">
                     </div>
-                
+
                     <div class="col-6"><button class="btn btn-secondary" id="recompute_apriori">Recompute</button></div>
                 </div>
-                
+
                 <div class="alert alert-primary" role="alert" id="countMsg">
                     No frequent sets found, try lowering the minimum support.
                 </div>
-                
+
                 <p>Count: <span id="frequent_set_count"></span></p>
 
                 <ul id="frequent_set_list" class="list-group"></ul>
             </div>
           </div>
       </div>
-	
+
 		<br/>
 		<div class="row" id="graphInfo">
-			<div class="col-12">        
+			<div class="col-12">
           <h3>Meaningful Word Network</h3>
           <div class="btn-group btn-group-lg" role="group">
               <button class="btn btn-primary" id="drawGraph">
@@ -173,15 +174,15 @@
           </div>
 				</div>
 		</div>
-      
+
     <div class="row">
       <div id="currentGraph" class="col-sm-12 col-md-6">
       </div>
       <div id="savedGraph" class="col-sm-12 col-md-6">
       </div>
     </div>
-		
-    </div> 
+
+    </div>
   </body>
 
 
@@ -195,24 +196,24 @@
         $('[data-toggle="tooltip"]').tooltip();
         $("#countMsg").hide();
         $("#graphInfo").hide();
-    }  
-    
+    }
+
     function updateCount(count,max,stage) {
         var stage_txt;
         if(stage == 1)
             stage_txt = "Getting comments...";
         else
             stage_txt = "Getting submissions..."
-        
+
         $("#msg").text(stage_txt + "(" + count + "/" + max +")");
     }
-	  
+
 	var edgeList;
-	  
+
 	function graphData(edges) {
 		edgeList = edges
-    
-    console.log(edges)    
+
+    console.log(edges)
 		console.log("Received " + edgeList.length + " edges");
 	}
   </script>
