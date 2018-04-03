@@ -133,6 +133,9 @@ $("#clearGraph").click(function () {
 var prunedWords = [];
 var prunedPalette = ["#1a9641", "#d7191c"];
 var palette = ['#66c2a5','#fc8d62'];
+var pruned = d3.scaleOrdinal()
+        .domain([false, true])
+        .range([1.0, 0.3]);
 
 function display(results, cookedData, combinedData) {
     wordScores = combinedData.wordScores;
@@ -168,14 +171,12 @@ function display(results, cookedData, combinedData) {
     var y = d3.scaleBand()
         .domain(topWords.map(function (d) { return d.word; })).padding(0.1)
         .range([height, 0]);
-    var pruned = d3.scaleOrdinal()
-        .domain([false, true])
-        .range([1.0, 0.3]);
+    
     var barType = d3.scaleOrdinal()
         .domain(["score", "count"])
         .range(palette)
 
-    // d3.select("svg").remove();
+    d3.select("svg").remove();
     var svg = d3.select("#topWords").append("svg")
         .attr("width", width)
         .attr("height", height)
@@ -202,6 +203,7 @@ function display(results, cookedData, combinedData) {
         .attr("y", d => y(d.word))
         .attr("width", d => x(d.value - d.count))
         .attr("fill", d => barType("score"))
+        .attr("opacity", d => pruned(d.pruned))
         .on("click", removeWord);
 
     // count bar
@@ -215,9 +217,7 @@ function display(results, cookedData, combinedData) {
         .attr("opacity", d => pruned(d.pruned))
         .on("click", removeWord);
 
-    canvas.select("g")
-        .selectAll("rect")
-        .transition()
+    bar.transition()
         .attr("opacity", d => pruned(d.pruned))
         .duration(750);
         
@@ -231,16 +231,21 @@ function display(results, cookedData, combinedData) {
         .style("text-decoration", d => (d.pruned) ? "italics line-through" : "none")
         .style("z-index", 1);
 
-    bar.exit().remove();
+    // bar.exit().remove();
 }
 
 function removeWord(d, index, group) {
-    if (!d.pruned) prunedWords.push(d.word);
-    else prunedWords.splice(prunedWords.indexOf(d.word));
+    d.pruned = !d.pruned;
+
+    d3.selectAll("rect")
+        // .datum(d)
+        .transition()
+        .attr("opacity", i => pruned(i.pruned))
+        .duration(750);
 
     console.log(d); console.log(prunedWords);
 
-    display(topWordRankings, cookedData, combinedData);
+    // display(topWordRankings, cookedData, combinedData);
 }
 
 
