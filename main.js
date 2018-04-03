@@ -246,7 +246,7 @@ function removeWord(selection, index, group) {
 
     d3.selectAll(".tick text")
         .transition()
-        .attr("class", d => (d == selection.word) ? "prunedText" : "none");
+        .attr("class", d => (d == selection.word && selection.pruned) ? "prunedText" : "none");
 
     // console.log(d); console.log(prunedWords);
 
