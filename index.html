@@ -1,179 +1,217 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>MEANRedd Prototype</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  </head>
 
-  <body>
-    <div classs="container card-columns">
-        <div class="row">
-            <div class="col-sm-12 col-md-6">
-              <div class="card">
-                <div class="form-group card-body">
-                    <p class="h1">MEANRedd</p>
+<head>
+  <meta charset="UTF-8">
+  <title>MEANRedd Prototype</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+</head>
 
-                    <p class="lead">A <strong>work-in-progress</strong> data visualization tool for discovering meaningful words and emergent topics in a corpus of Reddit submissions.</p>
+<body>
+  <div classs="container card-columns">
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <div class="card">
+          <div class="form-group card-body">
+            <p class="h1">MEANRedd</p>
 
-                  <form action="">
-                    <div class="input-group mb-3">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">/r/</span>
-                      </div>
-                      <input type="text" class="form-control"  id="subreddit" placeholder="your-subreddit-stub">
-                    </div>
-                        <input type="text" class="form-control" id="stopwords" placeholder="Comma, delimited, stop, words"><br/>
+            <p class="lead">A
+              <strong>work-in-progress</strong> data visualization tool for discovering meaningful words and emergent topics in a
+              corpus of Reddit submissions.</p>
 
-                    <div id="radio">
-                        <label class="radiobutton-inline"><input type="radio" name="listingtype" value="new" checked> New</label>
-                        <label class="radiobutton-inline"><input type="radio" name="listingtype" value="hot"> Hot</label>
-                        <label class="radiobutton-inline"><input type="radio" name="listingtype" value="year"> Top (year)</label>
-                        <label class="radiobutton-inline"><input type="radio" name="listingtype" value="month"> Top (month)</label>
-                        <label class="radiobutton-inline"><input type="radio" name="listingtype" value="week"> Top (week)</label>
-                    </div>
-
-                    <label class="checkbox-inline"><input class="form-check-label" id="includeComments"  type="checkbox" name="includeComments" checked=true> Include Comments</label>
-                    <br>
-
-                    <input type="button" id="submit" name="submit" value="Begin" class="btn btn-primary" />
-                </form>
+            <form action="">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">/r/</span>
                 </div>
-                </div>
-            </div>
-
-
-
-            <div id="accordion" class="col-sm-12 col-md-6">
-              <div class="card">
-                <div class="card-header" id="headingOne">
-                  <h5 class="mb-0">
-                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                      Before you begin
-                    </button>
-                  </h5>
-                </div>
-
-                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-                  <div class="card-body">
-                    <p>This tool is in the prototyping stage and does not represent the intended functionality.</p>
-                   <div class="alert alert-warning" role="alert">
-                      <h4 class="alert-heading">Warning!</h4>
-                      <hr>
-                        <p class="mb-0">A high volume of API requests will be sent if you choose to include comments in the data scraping process. This may be against Reddit's <a href="https://www.reddit.com/wiki/api-terms">terms of use</a>. You have been warned.</p>
-                    </div>
-                  </div>
-                </div>
-            </div>
-              <div class="card">
-                <div class="card-header" id="headingThree">
-                  <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                      How to use
-                    </button>
-                  </h5>
-                </div>
-                <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-                  <div class="card-body">
-                      <h3>How to use</h3>
-                        <ul>
-                          <li>Specify a valid subreddit name stub (i.e. <code>spacex</code>)
-                              <ul><li>Multiple subreddits are accepted but may be buggy.</li></ul>
-                          </li><br/>
-                          <li>Add subreddit specific stop words to refine your results.</li>
-                            <ul><li>A list of common English stop words have already been loaded.</li></ul>
-                          <br/>
-                          <li>Reddit has a few types of submission listings we can scrape data from: <code>New</code>, <code>Top</code> and <code>Hot</code>. <code>Top</code> can be filtered by day, week, month and year.</li><br/>
-                          <li>Including comments will greatly increase the available data but at the tradeoff of making a large number of API calls to Reddit.</li>
-                          <br/>
-                          <li>If no frequent itemsets are found, try lowering the minimum support threshold.</li>
-                          <br/>
-                          <li>If the tool becomes unresponsive, refresh the page and try again.</li>
-                      </ul>
-                  </div>
-                </div>
+                <input type="text" class="form-control" id="subreddit" placeholder="your-subreddit-stub">
               </div>
-              <div class="card">
-                <div class="card-header" id="headingTwo">
-                  <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        How do we determine meaningfulness
-                    </button>
-                  </h5>
-                </div>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-                  <div class="card-body">
-                      <h3>Meaningfulness</h3>
-                      Our proposed meaningfulness score will focus not only on the <code>frequency</code> of a given word over the subreddit, but it will also be scored based on the <code>karma</code> of the post that the word occurs in. This helps distinguish between a common word and a meaningful word.
-                  </div>
-                </div>
-              </div>
-            </div>
-        </div>
-
-
+              <input type="text" class="form-control" id="stopwords" placeholder="Comma, delimited, stop, words">
               <br/>
-      <div class="row">
-          <div class="col-sm-12 col-md-6">
-              <div id="results" class="card card-body">
-                  <h3 id="msg" style="display:none;">Working...</h3><br/>
 
-                  <button class="btn btn-secondary" id="contribs">Toggle contributions</button><br/>
-                  <div id="topWords">
-                  <ol id="word_list" class="list-group"></ol>
-                  </div>
-                </div>
+              <div id="radio">
+                <label class="radiobutton-inline">
+                  <input type="radio" name="listingtype" value="new" checked> New</label>
+                <label class="radiobutton-inline">
+                  <input type="radio" name="listingtype" value="hot"> Hot</label>
+                <label class="radiobutton-inline">
+                  <input type="radio" name="listingtype" value="year"> Top (year)</label>
+                <label class="radiobutton-inline">
+                  <input type="radio" name="listingtype" value="month"> Top (month)</label>
+                <label class="radiobutton-inline">
+                  <input type="radio" name="listingtype" value="week"> Top (week)</label>
+              </div>
+
+              <label class="checkbox-inline">
+                <input class="form-check-label" id="includeComments" type="checkbox" name="includeComments" checked=true> Include Comments</label>
+              <br>
+
+              <input type="button" id="submit" name="submit" value="Begin" class="btn btn-primary" />
+            </form>
           </div>
-
-          <div class="col-sm-12 col-md-6">
-
-            <div id="patternResults" class="card card-body">
-                <h3 id="patternStatus">Waiting for data...</h3><br/>
-
-                <div class="row">
-                    <div class="input-group mb-3 col-6">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">Min support</span>
-                      </div>
-                      <input type="text" class="form-control" id="min_support" data-toggle="tooltip" title="A low support may result in high computation times">
-                    </div>
-
-                    <div class="col-6"><button class="btn btn-secondary" id="recompute_apriori">Recompute</button></div>
-                </div>
-
-                <div class="alert alert-primary" role="alert" id="countMsg">
-                    No frequent sets found, try lowering the minimum support.
-                </div>
-
-                <p>Count: <span id="frequent_set_count"></span></p>
-
-                <ul id="frequent_set_list" class="list-group"></ul>
-            </div>
-          </div>
+        </div>
       </div>
 
-		<br/>
-		<div class="row" id="graphInfo">
-			<div class="col-12">
-          <h3>Meaningful Word Network</h3>
-          <div class="btn-group btn-group-lg" role="group">
-              <button class="btn btn-primary" id="drawGraph">
-						    Draw Network
-					     </button>
-              <button class="btn btn-primary" id="saveGraph">
-                Take Snapshot
+
+
+      <div id="accordion" class="col-sm-12 col-md-6">
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                Before you begin
               </button>
-              <button class="btn btn-primary" id="clearGraph">
-                Clear
-              </button>
+            </h5>
           </div>
-				</div>
-		</div>
+
+          <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <p>This tool is in the prototyping stage and does not represent the intended functionality.</p>
+              <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">Warning!</h4>
+                <hr>
+                <p class="mb-0">A high volume of API requests will be sent if you choose to include comments in the data scraping process.
+                  This may be against Reddit's
+                  <a href="https://www.reddit.com/wiki/api-terms">terms of use</a>. You have been warned.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" id="headingThree">
+            <h5 class="mb-0">
+              <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                How to use
+              </button>
+            </h5>
+          </div>
+          <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+            <div class="card-body">
+              <h3>How to use</h3>
+              <ul>
+                <li>Specify a valid subreddit name stub (i.e.
+                  <code>spacex</code>)
+                  <ul>
+                    <li>Multiple subreddits are accepted but may be buggy.</li>
+                  </ul>
+                </li>
+                <br/>
+                <li>Add subreddit specific stop words to refine your results.</li>
+                <ul>
+                  <li>A list of common English stop words have already been loaded.</li>
+                </ul>
+                <br/>
+                <li>Reddit has a few types of submission listings we can scrape data from:
+                  <code>New</code>,
+                  <code>Top</code> and
+                  <code>Hot</code>.
+                  <code>Top</code> can be filtered by day, week, month and year.</li>
+                <br/>
+                <li>Including comments will greatly increase the available data but at the tradeoff of making a large number
+                  of API calls to Reddit.</li>
+                <br/>
+                <li>If no frequent itemsets are found, try lowering the minimum support threshold.</li>
+                <br/>
+                <li>If the tool becomes unresponsive, refresh the page and try again.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" id="headingTwo">
+            <h5 class="mb-0">
+              <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                How do we determine meaningfulness
+              </button>
+            </h5>
+          </div>
+          <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+            <div class="card-body">
+              <h3>Meaningfulness</h3>
+              Our proposed meaningfulness score will focus not only on the
+              <code>frequency</code> of a given word over the subreddit, but it will also be scored based on the
+              <code>karma</code> of the post that the word occurs in. This helps distinguish between a common word and a meaningful word.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <br/>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <div id="results" class="card card-body">
+          <h3 id="msg" style="display:none;">Working...</h3>
+          <br/>
+
+          <p>For now, green bars indicate words which will be displayed in the visualization. Red bars indicate words pruned by the user.</p>
+
+          <button class="btn btn-secondary" id="contribs">Toggle contributions</button>
+          <br/>
+          <div id="topWords">
+            <ol id="word_list" class="list-group"></ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-12 col-md-6">
+
+        <div id="patternResults" class="card card-body">
+          <h3 id="patternStatus">Waiting for data...</h3>
+          <br/>
+
+          <div class="row">
+            <div class="input-group mb-3 col-6">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Min support</span>
+              </div>
+              <input type="text" class="form-control" id="min_support" data-toggle="tooltip" title="A low support may result in high computation times">
+            </div>
+
+            <div class="col-6">
+              <button class="btn btn-secondary" id="recompute_apriori">Recompute</button>
+            </div>
+          </div>
+
+          <div class="alert alert-primary" role="alert" id="countMsg">
+            No frequent sets found, try lowering the minimum support.
+          </div>
+
+          <p>Count:
+            <span id="frequent_set_count"></span>
+          </p>
+
+          <ul id="frequent_set_list" class="list-group"></ul>
+        </div>
+      </div>
+    </div>
+
+    <br/>
+    <div class="row" id="graphInfo">
+      <div class="col-12">
+        <h3>Meaningful Word Network</h3>
+        <div class="btn-group btn-group-lg" role="group">
+          <button class="btn btn-primary" id="drawGraph">
+            Draw Network
+          </button>
+          <button class="btn btn-primary" id="saveGraph">
+            Take Snapshot
+          </button>
+          <button class="btn btn-primary" id="clearGraph">
+            Clear
+          </button>
+        </div>
+      </div>
+    </div>
 
     <div class="row">
       <div id="currentGraph" class="col-sm-12 col-md-6">
@@ -182,44 +220,45 @@
       </div>
     </div>
 
-    </div>
-  </body>
+  </div>
+</body>
 
 
 
-  <script>
-    //for functions that need to exist before the main functionality, i.e. callbacks
-    window.onload = function() {
-        $("#contribs").hide();
-        $("#results").hide();
-        $("#patternResults").hide();
-        $('[data-toggle="tooltip"]').tooltip();
-        $("#countMsg").hide();
-        $("#graphInfo").hide();
-    }
+<script>
+  //for functions that need to exist before the main functionality, i.e. callbacks
+  window.onload = function () {
+    $("#contribs").hide();
+    $("#results").hide();
+    $("#patternResults").hide();
+    $('[data-toggle="tooltip"]').tooltip();
+    $("#countMsg").hide();
+    $("#graphInfo").hide();
+  }
 
-    function updateCount(count,max,stage) {
-        var stage_txt;
-        if(stage == 1)
-            stage_txt = "Getting comments...";
-        else
-            stage_txt = "Getting submissions..."
+  function updateCount(count, max, stage) {
+    var stage_txt;
+    if (stage == 1)
+      stage_txt = "Getting comments...";
+    else
+      stage_txt = "Getting submissions..."
 
-        $("#msg").text(stage_txt + "(" + count + "/" + max +")");
-    }
+    $("#msg").text(stage_txt + "(" + count + "/" + max + ")");
+  }
 
-	var edgeList;
+  var edgeList;
 
-	function graphData(edges) {
-		edgeList = edges
+  function graphData(edges) {
+    edgeList = edges
 
     console.log(edges)
-		console.log("Received " + edgeList.length + " edges");
-	}
-  </script>
-  <script src="stopWords.js"></script>
-  <script src="patternAnalysis.js"></script>
-  <script src="getData.js"></script>
-  <script src="forcedirected.js"></script>
-  <script src="main.js"></script>
+    console.log("Received " + edgeList.length + " edges");
+  }
+</script>
+<script src="stopWords.js"></script>
+<script src="patternAnalysis.js"></script>
+<script src="getData.js"></script>
+<script src="forcedirected.js"></script>
+<script src="main.js"></script>
+
 </html>

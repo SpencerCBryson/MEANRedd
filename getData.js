@@ -10,7 +10,10 @@ var ws_pattern = /\w+'*\w+/g
 var data = {}
 var cookedData = {}
 var finished = {}
+var combined = {}
 var subredditCount = 0
+var currentSubreddits = []
+var result = []
 
 var total_iterations = 0
 var max_iterations = 0
@@ -55,9 +58,9 @@ function postData(post) {
     //Scoring functions need to be re-evaluated
 
     if(content_)
-        wordScores_ = uWords.map(function(x, i){return {"word": x, "score": (counts[x] * 1.2) + (0.3 * scorePerWord)}})
+        wordScores_ = uWords.map(function(x, i){return {"word": x, "count": counts[x], "score": (counts[x] * 1.2) + (0.3 * scorePerWord)}})
     else if (title_)
-        wordScores_ = uWords.map(function(x, i){return {"word": x, "score": (counts[x] * 1.2) + (0.03 * scorePerWord)}})
+        wordScores_ = uWords.map(function(x, i){return {"word": x, "count": counts[x], "score": (counts[x] * 1.2) + (0.03 * scorePerWord)}})
 
     return {
         id: id_,
@@ -92,15 +95,20 @@ function summarizeSubReddit(subreddit, iter) {
     wordScoresByPost = wordScoresByPost.map(function(x) {
         if (x) return x; else return []; 
     })
-    
+
+
     var wordScores = {}
+    var wordCounts = {}
     
     wordScoresByPost.reduce((a, b) => a.concat(b)).map(
         function (word)  {
-            if (wordScores[word.word]) 
+            if (wordScores[word.word]) {
+                wordCounts[word.word] += word.count;
                 wordScores[word.word] += word.score;
-            else 
+            } else {
+                wordCounts[word.word] = word.count;
                 wordScores[word.word] = word.score;
+            }
         }
     )
     
@@ -108,9 +116,9 @@ function summarizeSubReddit(subreddit, iter) {
     let wordData = {}
     
     wordData["wordScores"] = wordScores;
-    //wordData["wordCounts"] = wordCounts;
+    wordData["wordCounts"] = wordCounts;
     
-    cookedData[subreddit] = wordData
+    cookedData[subreddit] = wordData;
     
 }
 
@@ -125,33 +133,37 @@ function summarize() {
     else 
         subreddits.map(sr => console.log(sr + " : " + data[sr].length))
     
-    var combined = {
+    combinedData = {
         wordScores : {},
         wordCounts : {}
     }
     
     for(sr of subreddits) {
         let wordScores = cookedData[sr].wordScores
+        let wordCounts = cookedData[sr].wordCounts
         
         Object.keys(cookedData[sr].wordScores).forEach(function(word) {
-            if(combined.wordScores[word])
-                combined.wordScores[word] += wordScores[word]
-            else
-                combined.wordScores[word] = wordScores[word]
+            if(combinedData.wordScores[word]){
+                combinedData.wordCounts[word] += wordCounts[word];
+                combinedData.wordScores[word] += wordScores[word];
+            } else {
+                combinedData.wordCounts[word] = wordCounts[word];
+                combinedData.wordScores[word] = wordScores[word];
+            }
         });
     }
 
     
     //cookedData["combinedData"] = combined;
     
-    var words = Object.keys(combined.wordScores);
-    let result = words.sort((a, b) => combined.wordScores[b] - combined.wordScores[a]);
+    var words = Object.keys(combinedData.wordScores);
+    result = words.sort((a, b) => combinedData.wordScores[b] - combinedData.wordScores[a]);
     
     console.log('done summarizing')
     
     topWordRankings = result.slice(0, 30);
     
-    display(topWordRankings, cookedData, combined);
+    display(topWordRankings, cookedData, combinedData);
     
     generateCandidatePairs();
     
