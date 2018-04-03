@@ -17,6 +17,15 @@ body {
     display: list-item;
 }
 
+.prunedText {
+    text-decoration: line-through;
+    font-style: italic;
+}
+
+.domain {
+    stroke: none;
+}
+
 .ellipsis {
 /*
     display: -webkit-flex;

@@ -160,7 +160,7 @@ function display(results, cookedData, combinedData) {
     //Svg Attributes
     var width = $("#topWords").width();
     var height = 1000;
-    var margin = { top: 20, right: 20, bottom: 30, left: 100 };
+    var margin = { top: 20, right: 20, bottom: 30, left: 70 };
 
     var xUpperBound = d3.max(topWords, d => d.value);
 
@@ -215,6 +215,7 @@ function display(results, cookedData, combinedData) {
         .attr("width", d => x(d.count))
         .attr("fill", d => barType("count"))
         .attr("opacity", d => pruned(d.pruned))
+        .attr("", d => console.log(d))
         .on("click", removeWord);
 
     bar.transition()
@@ -234,16 +235,20 @@ function display(results, cookedData, combinedData) {
     // bar.exit().remove();
 }
 
-function removeWord(d, index, group) {
-    d.pruned = !d.pruned;
+function removeWord(selection, index, group) {
+    selection.pruned = !selection.pruned;
 
     d3.selectAll("rect")
         // .datum(d)
         .transition()
-        .attr("opacity", i => pruned(i.pruned))
+        .attr("opacity", d => pruned(d.pruned))
         .duration(750);
 
-    console.log(d); console.log(prunedWords);
+    d3.selectAll(".tick text")
+        .transition()
+        .attr("class", d => (d == selection.word) ? "prunedText" : "none");
+
+    // console.log(d); console.log(prunedWords);
 
     // display(topWordRankings, cookedData, combinedData);
 }
