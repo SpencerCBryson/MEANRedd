@@ -193,7 +193,8 @@ function display(results, cookedData, combinedData) {
         .selectAll(".bar")
         .data(topWords)
         .enter()
-        .append("g");
+        .append("g")
+          .on("click", removeWord);
 
     // score bar
     bar.append("rect")
@@ -204,7 +205,8 @@ function display(results, cookedData, combinedData) {
         .attr("width", d => x(d.value - d.count))
         .attr("fill", d => barType("score"))
         .attr("opacity", d => pruned(d.pruned))
-        .on("click", removeWord);
+        .append("title")
+          .text(d => "Score:" + d.value);
 
     // count bar
     bar.append("rect")
@@ -215,8 +217,8 @@ function display(results, cookedData, combinedData) {
         .attr("width", d => x(d.count))
         .attr("fill", d => barType("count"))
         .attr("opacity", d => pruned(d.pruned))
-        .attr("", d => console.log(d))
-        .on("click", removeWord);
+        .append("title")
+          .text(d => "Count:" + d.count);
 
     bar.transition()
         .attr("opacity", d => pruned(d.pruned))
