@@ -36,13 +36,13 @@ $("#submit").click(function () {
     // start getting data
     if (subreddits_raw) {
         $("#msg").css('display', 'inline')
-        let subreddits = subreddits_raw.replace(/\s/g, '').split(',')
+        subreddits = subreddits_raw.replace(/\s/g, '').split(',')
 
         //        max_iterations = subreddits.length * maxListings
         console.log("fetching " + maxListings + " listings")
 
         var params;
-        var choice = $("#radio input[type='radio']:checked").val();
+        choice = $("#radio input[type='radio']:checked").val();
 
         if (choice == "new")
             params = newParams
@@ -70,6 +70,7 @@ $("#recompute_apriori").click(function () {
     generateCandidatePairs();
 });
 
+var graph = {}
 
 $("#drawGraph").click(function () {
     var node_map = {};
@@ -106,7 +107,7 @@ $("#drawGraph").click(function () {
 
     }
 
-    let graph = { nodes: nodes, links: edges }
+    graph = { nodes: nodes, links: edges }
 
     $("#currentGraph").empty();
 
@@ -217,12 +218,8 @@ function display(results, cookedData, combinedData) {
         .attr("width", d => x(d.count))
         .attr("fill", d => barType("count"))
         .attr("opacity", d => pruned(d.pruned))
-        .append("title")
-          .text(d => "Count:" + d.count);
-
-    bar.transition()
-        .attr("opacity", d => pruned(d.pruned))
-        .duration(750);
+        .attr("", d => console.log(d))
+        .on("click", removeWord);
         
     bar.append("text")
         .text(d => d.value.toFixed(2))
@@ -250,6 +247,28 @@ function removeWord(selection, index, group) {
         .transition()
         .attr("class", d => (d == selection.word && selection.pruned) ? "prunedText" : "none");
 
+    if (selection.pruned) 
+        prunedWords.push(selection.word)
+    else
+        prunedWords.splice(prunedWords.indexOf(selection.word))
+    
+    
+    var newGraph = {};
+    
+    newGraph.nodes = graph.nodes.filter(d => !prunedWords.includes(d.id));
+    newGraph.links = graph.links.filter(d => !prunedWords.includes(d.source.id) || !prunedWords.includes(d.target.id));
+
+    console.log(graph)
+
+    d3.selectAll(".node")
+        .data(graph)
+        .filter(d => console.log(d))
+        .exit()
+        .transition()
+        .duration(500)
+        .attr("r", 0)
+        .remove();
+    
     // console.log(d); console.log(prunedWords);
 
     // display(topWordRankings, cookedData, combinedData);
