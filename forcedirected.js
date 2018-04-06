@@ -88,18 +88,15 @@ function drawGraph(graph) {
             .attr("x2", function (d) { return d.target.x; })
             .attr("y2", function (d) { return d.target.y; });
 
-        let offset = 8;
+        let offset = 7;
 
-        // node
-        //     .attr("x", function (d) { return d.x = Math.max(offset, Math.min(+svg.attr("width") - offset, d.x)); })
-        //     .attr("y", function (d) { return d.y = Math.max(offset, Math.min(+svg.attr("height") - offset, d.y)); });
-
-        node.attr("transform", function(d) { 
-            var x = Math.min(offset, +svg.attr("width") - offset, d.x);
-            var y = Math.min(offset, +svg.attr("height") - offset, d.y);
-
-            return "translate(" + d.x + "," + d.y + ")"; 
-        });
+         node.select("circle")
+             .attr("cx", function (d) { return d.x = Math.max(offset, Math.min(+svg.attr("width") - offset, d.x)); })
+             .attr("cy", function (d) { return d.y = Math.max(offset, Math.min(+svg.attr("height") - offset, d.y)); });
+      
+        node.select("text")
+             .attr("x", function (d) { return d.x = Math.max(offset, Math.min(+svg.attr("width") - offset, d.x)); })
+             .attr("y", function (d) { return d.y = Math.max(offset, Math.min(+svg.attr("height") - offset, d.y)); });
     }
 }
 
