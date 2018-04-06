@@ -207,7 +207,7 @@ function display(results, cookedData, combinedData) {
         .attr("fill", d => barType("score"))
         .attr("opacity", d => pruned(d.pruned))
         .append("title")
-          .text(d => "Score:" + d.value);
+          .text(d => "Karma:" + (d.value - d.count));
 
     // count bar
     bar.append("rect")
@@ -218,8 +218,10 @@ function display(results, cookedData, combinedData) {
         .attr("width", d => x(d.count))
         .attr("fill", d => barType("count"))
         .attr("opacity", d => pruned(d.pruned))
-        .attr("", d => console.log(d))
-        .on("click", removeWord);
+        .append("title")
+          .text(d => "Count:" + d.count);
+
+        //.on("click", removeWord);
         
     bar.append("text")
         .text(d => d.value.toFixed(2))
