@@ -59,7 +59,7 @@ function drawGraph(graph) {
         .domain(d3.extent(nodeValues))
         .range([nodeRadius, 12]);
 
-    var link = d3.select(".links")
+    var link = d3.select("#currentGraph .links")
         .selectAll(".link")
         .data(graph.links, d => d.source.id + d.target.id);
     
@@ -79,7 +79,7 @@ function drawGraph(graph) {
             .style("stroke-opacity", 0.0)
             .remove();
 
-    var node = d3.select(".nodes")
+    var node = d3.select("#currentGraph .nodes")
         .selectAll(".node")
         .data(graph.nodes, d => d.id);
         
@@ -143,8 +143,8 @@ function drawGraph(graph) {
 
     simulation.alphaTarget(0.3).restart()
     
-    var nodes = svg.selectAll(".node");
-    var links = svg.selectAll(".link");
+    var nodes = svg.selectAll("#currentGraph .node");
+    var links = svg.selectAll("#currentGraph .link");
 
     function ticked() {
         links

@@ -293,10 +293,12 @@ function display(results, cookedData, combinedData) {
         .domain(["score", "count"])
         .range(palette)
 
-    d3.select("svg").remove();
+    d3.select("#freq-words").remove();
+  
     var svg = d3.select("#topWords").append("svg")
         .attr("width", width)
         .attr("height", height)
+        .attr("id","freq-words");
 
     var canvas = svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
