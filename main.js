@@ -151,13 +151,12 @@ function recomputeApriori() {
         displayPatterns(response.data.frequentSets);
         graphGlobal = generateGraph(edgeList);
         
-        graphGlobal.nodes = graphGlobal.nodes.sort((a, b) => a.id - b.id)
-        
         if (graphed)
             drawGraph(graphGlobal);
         else
             init(graphGlobal);
         
+        $("#min_support").val(response.data.support.toFixed(2))
         graphed = true;
     }
     

@@ -125,7 +125,11 @@ function apriori(data) {
         k++;
     }
     
-    postMessage({ edgeList: frequentSets.filter(a => a.candidate.length == 2), frequentSets: frequentSets });
+    postMessage({ 
+        edgeList: frequentSets.filter(a => a.candidate.length == 2), 
+        frequentSets: frequentSets,
+        support: support
+    });
 }
 
 
