@@ -19,24 +19,33 @@ var simulation = d3.forceSimulation()
             .force("y", d3.forceY(0.001))
             .force("x", d3.forceX(0.001))
 
-function drawGraph(graph) {
-    var svg = d3.select(currentDiv)
+function init(graph) {
+    svg = d3.select(currentDiv)
         .append("svg")
         .attr("width", width)
         .attr("height", height)
         .attr("id", "currentsvg");
+    
+    svg.append("g").attr("class", "links");
+    svg.append("g").attr("class", "nodes");
+    
+    drawGraph(graph);
+}
+
+function drawGraph(graph) {
+   console.log(graph)
   
     let nodeRadius = 4;
     let nodeValues = graph.nodes.map(node => node.value)
 
-    svg.selectAll("line")
-        .remove();
-
-    svg.selectAll("circle")
-          .remove();
-
-    svg.selectAll("text")
-        .remove();
+//    svg.selectAll("line")
+//        .remove();
+//
+//    svg.selectAll("circle")
+//          .remove();
+//
+//    svg.selectAll("text")
+//        .remove();
   
 
     var color = d3.scaleSequential(d3.interpolateYlGnBu)
@@ -50,38 +59,76 @@ function drawGraph(graph) {
         .domain(d3.extent(nodeValues))
         .range([nodeRadius, 12]);
 
-    var link = svg.append("g")
-        .attr("class", "links")
-        .selectAll("line")
-        .data(graph.links)
-        .enter().append("line")
-          .attr("stroke-width", function (d) { return d3.max( [1, Math.sqrt(d.value)] ) })
-          .attr("stroke-opacity", 0.7)
-          .style("stroke", function (d) { return color(d.value) })
+    var link = d3.select(".links")
+        .selectAll(".link")
+        .data(graph.links, d => d.source.id + d.target.id);
+    
+    link.enter()
+        .append("line")
+            .style("stroke-opacity", 0.0)
+            .attr("class", "link")
+            .attr("stroke-width", function (d) { return d3.max( [1, Math.sqrt(d.value)] ) })
+            .style("stroke", function (d) { return color(d.value) })
+        .transition()
+            .duration(150)
+            .style("stroke-opacity", 0.7);
+    
+    link.exit()
+        .transition()
+            .duration(150)
+            .style("stroke-opacity", 0.0)
+            .remove();
 
-    var node = svg.append("g")
-        .attr("class", "node")
-        .selectAll("text")
-        .data(graph.nodes)
-        .enter()
-        .append("g");
-
-    node.append("circle")
-        .attr("r", d => nodesize(d.value))
-        .attr("x", -8)
-        .attr("y", -8)
-        .call(d3.drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended));
-
-    node.append("text")
-        //.attr("r", 7)
-        .text(function (d) { return d.id; })
-        .attr("dx", d => (4 + nodesize(d.value)))
-        .attr("dy", ".35em")
-        //.("fill", function(d) { return color(d.group); })
-        .style("font-size", d => fontsize(d.value));
+    var node = d3.select(".nodes")
+        .selectAll(".node")
+        .data(graph.nodes, d => d.id);
+        
+    var newNodes = node.enter()
+        .append("g")
+        .attr("class", "node");
+    
+    newNodes.append("circle")
+                .attr("r", 0)
+    //            .attr("cx", 150)
+    //            .attr("cy", 150)
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended))
+            .transition()
+                .duration(150)
+                .attr("r", d => nodesize(d.value));
+    
+    newNodes.append("text")
+            //.attr("r", 7)
+            .style("opacity", 0)
+            .text(function (d) { return d.id; })
+            .attr("dx", d => (4 + nodesize(d.value)))
+            .attr("dy", ".35em")
+            //.("fill", function(d) { return color(d.group); })
+            .style("font-size", d => fontsize(d.value))
+            .style("user-select", "none")
+        .transition()
+            .duration(150)
+            .style("opacity", 1.0);
+    
+    var nodeRemove = node.exit();
+    
+    console.log(nodeRemove)
+        
+    nodeRemove.select("circle")
+        .transition()
+        .duration(150)
+        .attr("r", 0)
+        .remove();
+    
+    nodeRemove.select("text")
+        .transition()
+        .duration(150)
+        .style("opacity", 0)
+        .remove();
+    
+    nodeRemove.transition().duration(750).remove();
 
     console.log(+svg.attr("width"))
 
@@ -95,19 +142,22 @@ function drawGraph(graph) {
         .links(graph.links);
 
     simulation.alphaTarget(0.3).restart()
+    
+    var nodes = svg.selectAll(".node");
+    var links = svg.selectAll(".link");
 
     function ticked() {
-        link
+        links
             .attr("x1", function (d) { return d.source.x; })
             .attr("y1", function (d) { return d.source.y; })
             .attr("x2", function (d) { return d.target.x; })
             .attr("y2", function (d) { return d.target.y; });
 
-         node.select("circle")
+         nodes.select("circle")
              .attr("cx", function (d) { return d.x = Math.max(nodesize(d.value), Math.min(+svg.attr("width") - nodesize(d.value), d.x)); })
              .attr("cy", function (d) { return d.y = Math.max(nodesize(d.value), Math.min(+svg.attr("height") - nodesize(d.value), d.y)); });
-      
-        node.select("text")
+
+         nodes.select("text")
              .attr("x", function (d) { return d.x = Math.max(nodesize(d.value), Math.min(+svg.attr("width") - nodesize(d.value), d.x)); })
              .attr("y", function (d) { return d.y = Math.max(nodesize(d.value), Math.min(+svg.attr("height") - nodesize(d.value), d.y)); });
     }

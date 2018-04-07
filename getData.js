@@ -13,7 +13,10 @@ var finished = {}
 var combined = {}
 var subredditCount = 0
 var currentSubreddits = []
-var result = []
+var result = [];
+var globalWordCounts = {}
+var topWordRankings = []
+var nPosts = 30;
 
 var total_iterations = 0
 var max_iterations = 0
@@ -161,11 +164,11 @@ function summarize() {
     
     console.log('done summarizing')
     
-    topWordRankings = result.slice(0, 30);
+    topWordRankings = result.slice(0, nPosts);
     
     display(topWordRankings, cookedData, combinedData);
     
-    generateCandidatePairs();
+    recomputeApriori();
     
 }
 

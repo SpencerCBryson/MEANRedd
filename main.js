@@ -110,15 +110,67 @@ $("#snap-tab").click(function() {
     snapTab();
 });
 
-$("#recompute_apriori").click(function () {
+function displayPatterns(frequentSets) {
+    var container = $("#patternResults");
+    var ul = $("#frequent_set_list");
+    var min_sup = $("#min_support");
+    
+    console.log("Done apriori")
+    
+    min_sup.val(support)
+    ul.empty()
+    
+    if(frequentSets.length == 0)
+        $("#countMsg").show()
+        
+    $("#frequent_set_count").text(frequentSets.length)
+    
+    $("#patternStatus").text("Frequent sets of meaningful words");
+    
+    for (item of frequentSets) {
+        words = item.candidate.reduce((a, b) => String(a) + ', ' + String(b));
+        $(ul).append('<li class="list-group-item ellipsis">' + '<strong class="ellipsis-item"> ' + words + '</strong> '
+                    + '<span class="badge badge-primary badge-pill">' + item.frequency
+                    + '</span></li>');
+    }
+    
+    container.append(ul)
+    //container.show();
+    $("#graphInfo").show()
+}
+
+function recomputeApriori() {
     support = $("#min_support").val()
     $("#countMsg").hide();
-    generateCandidatePairs();
-});
+    
+    var aprioriWorker = new Worker('patternAnalysis.js');
+    
+    function finished(response) {
+        var edgeList = response.data.edgeList;
+        
+        displayPatterns(response.data.frequentSets);
+        graphGlobal = generateGraph(edgeList);
+        
+        graphGlobal.nodes = graphGlobal.nodes.sort((a, b) => a.id - b.id)
+        
+        if (graphed)
+            drawGraph(graphGlobal);
+        else
+            init(graphGlobal);
+        
+        graphed = true;
+    }
+    
+    aprioriWorker.addEventListener("message", finished, false);
+    aprioriWorker.postMessage({ topWords: result.filter(word => !prunedWords.includes(word)).slice(0, nPosts), data: data, support: $("#min_support").val() });
+}
 
-var graph = {}
+$("#recompute_apriori").click(recomputeApriori);
 
-$("#drawGraph").click(function () {
+var graphGlobal = {}
+var graphed = false;
+
+function generateGraph(edgeList) {
     var node_map = {};
 
     var edges = []
@@ -157,13 +209,21 @@ $("#drawGraph").click(function () {
 
     }
 
-    graph = { nodes: nodes, links: edges }
+    var graph = { nodes: nodes, links: edges }
 
-    $("#currentGraph").empty();
+    $("#currentGraph #graphTitle").remove()
+    $("#currentGraph").prepend("<div id=\"graphTitle\"><strong>" + subreddits[0] + "</strong>: " + choice + "</div>");
 
-    $("#currentGraph").append("<div id=\"graphTitle\"><strong>" + subreddits[0] + "</strong>: " + choice + "</div>");
+    return graph;
+}
 
-    drawGraph(graph);
+$("#drawGraph").click(function () {
+    generateGraph();
+    
+    if (!graphed) init();
+    else drawGraph(graphGlobal);
+    
+    graphed = true;
 });
 
 $("#saveGraph").click(function () {
@@ -224,7 +284,7 @@ function display(results, cookedData, combinedData) {
     //Scale definition
     var x = d3.scaleLinear()
         .domain([0, xUpperBound])
-        .range([0, width - margin.left]);
+        .range([0, width - margin.left - 30]);
     var y = d3.scaleBand()
         .domain(topWords.map(function (d) { return d.word; })).padding(0.1)
         .range([height, 0]);
@@ -281,10 +341,10 @@ function display(results, cookedData, combinedData) {
         
     bar.append("text")
         .text(d => d.value.toFixed(2))
-        .attr("x", d => x(d.value) - 50)
+        .attr("x", d => x(d.value))
         .attr("y", d => y(d.word) + (y.bandwidth() - 5))
         .style("font-family", "sans-serif")
-        .style("font-size", "12px")
+        .style("font-size", "9px")
         .style("fill", "white")
         .style("text-decoration", d => (d.pruned) ? "italics line-through" : "none")
         .style("z-index", 1);
@@ -292,8 +352,19 @@ function display(results, cookedData, combinedData) {
     // bar.exit().remove();
 }
 
+function update() {
+    
+}
+
 function removeWord(selection, index, group) {
     selection.pruned = !selection.pruned;
+    
+    if (selection.pruned) 
+        prunedWords.push(selection.word)
+    else
+        prunedWords = prunedWords.filter(d => !(d == selection.word))
+    
+    console.log(prunedWords)
 
     d3.selectAll("rect")
         // .datum(d)
@@ -303,29 +374,20 @@ function removeWord(selection, index, group) {
 
     d3.selectAll(".tick text")
         .transition()
-        .attr("class", d => (d == selection.word && selection.pruned) ? "prunedText" : "none");
+        .attr("class", d => prunedWords.includes(d) ? "prunedText" : "none");
+    
+//    var newGraph = {};
+//    
+//    newGraph.nodes = graphGlobal.nodes.filter(d => !prunedWords.includes(d.id));
+//    newGraph.links = graphGlobal.links.filter(d => !(prunedWords.includes(d.source.id) || prunedWords.includes(d.target.id)));
 
-    if (selection.pruned) 
-        prunedWords.push(selection.word)
-    else
-        prunedWords.splice(prunedWords.indexOf(selection.word))
+//    console.log(graph)
+//    console.log(newGraph)
     
     
-    var newGraph = {};
     
-    newGraph.nodes = graph.nodes.filter(d => !prunedWords.includes(d.id));
-    newGraph.links = graph.links.filter(d => !prunedWords.includes(d.source.id) || !prunedWords.includes(d.target.id));
-
-    console.log(graph)
-
-    d3.selectAll(".node")
-        .data(graph)
-        .filter(d => console.log(d))
-        .exit()
-        .transition()
-        .duration(500)
-        .attr("r", 0)
-        .remove();
+    topWordRankings = result.filter(d => !prunedWords.includes(d)).slice(0, nPosts);
+    recomputeApriori();
     
     // console.log(d); console.log(prunedWords);
 

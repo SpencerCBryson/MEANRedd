@@ -7,13 +7,15 @@
 // note there are major ways we could reduce the 
 // memory usage throughout these files
 
-var globalWordCounts = {}
-var topWordRankings = []
-
 var support = 0 // default
 maxSetSize = 5
 
-function generateCandidatePairs() {
+onmessage = generateCandidatePairs;
+
+function generateCandidatePairs(message) {
+    
+    topWordRankings = message.data.topWords;
+    support = message.data.support;
     
     pairs = [];
     
@@ -31,7 +33,7 @@ function generateCandidatePairs() {
         }
     }
     
-    apriori();
+    apriori(message.data.data);
 }
 
 // Takes the previous pruned candidate set
@@ -76,7 +78,7 @@ function maximalPrune(frequentSets, candidates) {
     return frequentSets;
 }
 
-function apriori() {
+function apriori(data) {
     var frequentSets = [];
     var prevCandidates = [];
     var candidates = pairs;
@@ -122,36 +124,8 @@ function apriori() {
         
         k++;
     }
-	
-    graphData(frequentSets.filter(a => a.candidate.length == 2));
-    displayPatterns(frequentSets);
+    
+    postMessage({ edgeList: frequentSets.filter(a => a.candidate.length == 2), frequentSets: frequentSets });
 }
 
-function displayPatterns(frequentSets) {
-    var container = $("#patternResults");
-    var ul = $("#frequent_set_list");
-    var min_sup = $("#min_support");
-    
-    console.log("Done apriori")
-    
-    min_sup.val(support)
-    ul.empty()
-    
-    if(frequentSets.length == 0)
-        $("#countMsg").show()
-        
-    $("#frequent_set_count").text(frequentSets.length)
-    
-    $("#patternStatus").text("Frequent sets of meaningful words");
-    
-    for (item of frequentSets) {
-        words = item.candidate.reduce((a, b) => String(a) + ', ' + String(b));
-        $(ul).append('<li class="list-group-item ellipsis">' + '<strong class="ellipsis-item"> ' + words + '</strong> '
-                    + '<span class="badge badge-primary badge-pill">' + item.frequency
-                    + '</span></li>');
-    }
-    
-    container.append(ul)
-    //container.show();
-    $("#graphInfo").show()
-}
+
