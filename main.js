@@ -146,7 +146,7 @@ function recomputeApriori() {
 
     $("#msg-box").show();
     $("#msg").empty();
-    $("#msg").append("<span class='glyphicon glyphicon-refresh'></span>" + "Recomputing Apriori...");
+    $("#msg").append("<span class='fa fa-refresh fa-spin'></span>" + "  Recomputing Apriori...");
     
     var aprioriWorker = new Worker('patternAnalysis.js');
     
