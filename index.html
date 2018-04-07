@@ -44,7 +44,7 @@
   </nav>
   
   <div classs="container card-columns" style="padding-left:2em">
-    <div id="info-row" class="row">
+    <div id="info-row" class="row" style="padding-top:2em;">
       <div class="col-sm-12 col-md-6">
         <div class="card">
           <div class="form-group card-body">
@@ -53,6 +53,12 @@
               A <strong>work-in-progress</strong> data visualization tool for discovering meaningful words and emergent topics in a
               corpus of Reddit submissions.
             </p>
+            <p>This tool is in the prototyping stage and does not represent the intended functionality.</p>
+            <div class="alert alert-warning" role="alert">
+              <h4 class="alert-heading">Warning!</h4>
+              <hr>
+              <p class="mb-0">A high volume of API requests will be sent if you choose to include comments in the data scraping process. This may be against Reddit's <a href="https://www.reddit.com/wiki/api-terms">terms of use</a>. You have been warned.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -61,48 +67,19 @@
         <div class="card">
           <div class="card-header" id="headingOne">
             <h5 class="mb-0">
-              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Before you begin
-              </button>
-            </h5>
-          </div>
-
-          <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-            <div class="card-body">
-              <p>This tool is in the prototyping stage and does not represent the intended functionality.</p>
-              <div class="alert alert-warning" role="alert">
-                <h4 class="alert-heading">Warning!</h4>
-                <hr>
-                <p class="mb-0">A high volume of API requests will be sent if you choose to include comments in the data scraping process.
-                  This may be against Reddit's
-                  <a href="https://www.reddit.com/wiki/api-terms">terms of use</a>. You have been warned.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header" id="headingThree">
-            <h5 class="mb-0">
-              <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                 How to use
               </button>
             </h5>
           </div>
-          <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+          <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
             <div class="card-body">
               <h3>How to use</h3>
+              <p class="lead">Step One: Data Collection</p>
               <ul>
                 <li>Specify a valid subreddit name stub (i.e.
                   <code>spacex</code>)
-                  <ul>
-                    <li>Multiple subreddits are accepted but may be buggy.</li>
-                  </ul>
                 </li>
-                <br/>
-                <li>Add subreddit specific stop words to refine your results.</li>
-                <ul>
-                  <li>A list of common English stop words have already been loaded.</li>
-                </ul>
                 <br/>
                 <li>Reddit has a few types of submission listings we can scrape data from:
                   <code>New</code>,
@@ -110,10 +87,19 @@
                   <code>Hot</code>.
                   <code>Top</code> can be filtered by day, week, month and year.</li>
                 <br/>
-                <li>Including comments will greatly increase the available data but at the tradeoff of making a large number
-                  of API calls to Reddit.</li>
+                <li>Including comments will greatly increase the available data but at the tradeoff of making a large number of API calls to Reddit.</li>
+                <ul><li>The quality of the data associated with comments is generally lesser than that of the posts themselves. </li></ul>
+              </ul>
+              <p class="lead">Step Two: Data Visualization</p>
+              
+              <ul>
+                <li>The tool will process the retrieved data and attempt to create a network between frequently used sets of meaningful words.</li>
                 <br/>
                 <li>If no frequent itemsets are found, try lowering the minimum support threshold.</li>
+                <ul><li>Too low of a threshold will result in longer computation times.</li></ul>
+                <br/>
+                <li>Remove undesired or subreddit-specific stop words by selecting them in the meaningful word listing.</li>
+                <ul><li>A list of common English stop words have already been loaded.</li></ul>
                 <br/>
                 <li>If the tool becomes unresponsive, refresh the page and try again.</li>
               </ul>
@@ -123,7 +109,7 @@
         <div class="card">
           <div class="card-header" id="headingTwo">
             <h5 class="mb-0">
-              <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                 How do we determine meaningfulness
               </button>
             </h5>
