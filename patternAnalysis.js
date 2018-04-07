@@ -142,7 +142,7 @@ function displayPatterns(frequentSets) {
         
     $("#frequent_set_count").text(frequentSets.length)
     
-    $("#patternStatus").text("Frequent sets of words");
+    $("#patternStatus").text("Frequent sets of meaningful words");
     
     for (item of frequentSets) {
         words = item.candidate.reduce((a, b) => String(a) + ', ' + String(b));
@@ -152,6 +152,6 @@ function displayPatterns(frequentSets) {
     }
     
     container.append(ul)
-    container.show();
+    //container.show();
     $("#graphInfo").show()
 }

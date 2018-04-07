@@ -1,9 +1,15 @@
+/*
 body {
     padding: 2em;
 }
+*/
+
+#nav {
+  justify-content: flex-start; 
+}
 
 #word_list {
-	max-height:20em;
+	 max-height:20em;
     overflow-y:auto;
 }
 

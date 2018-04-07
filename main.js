@@ -21,9 +21,12 @@ $("#submit").click(function () {
     $("#patternResults").hide()
     $("#countMsg").hide();
     $("#graphInfo").hide();
+    $("#info-row").hide();
 
 
+    $("#msg-box").show();
     $("#results").show()
+    $("#tabs").show()
 
     // add users specified stop words
     if (usr_stop_words_raw) {
@@ -42,7 +45,7 @@ $("#submit").click(function () {
         console.log("fetching " + maxListings + " listings")
 
         var params;
-        choice = $("#radio input[type='radio']:checked").val();
+        choice = $("#radio").val();
 
         if (choice == "new")
             params = newParams
@@ -64,6 +67,49 @@ $("#submit").click(function () {
     }
 });
 
+$("#toggle-info").click(function() {
+    $("#info-row").toggle();
+})
+
+function wordsTab () {
+    $("#words-tab").addClass("active");
+    $("#results").show();
+    $("#sets-tab").removeClass("active");
+    $("#patternResults").hide();
+    $("#snap-tab").removeClass("active");
+    $("#savedGraph").hide();
+}
+
+function setsTab() {
+    $("#words-tab").removeClass("active");
+    $("#results").hide();
+    $("#sets-tab").addClass("active");
+    $("#patternResults").show();
+    $("#snap-tab").removeClass("active");
+    $("#savedGraph").hide();
+}
+
+function snapTab() {
+    $("#words-tab").removeClass("active");
+    $("#results").hide();
+    $("#sets-tab").removeClass("active");
+    $("#patternResults").hide();
+    $("#snap-tab").addClass("active");
+    $("#savedGraph").show();
+}
+
+$("#words-tab").click(function() {
+    wordsTab();
+});
+
+$("#sets-tab").click(function() {
+    setsTab();
+});
+
+$("#snap-tab").click(function() {
+    snapTab();
+});
+
 $("#recompute_apriori").click(function () {
     support = $("#min_support").val()
     $("#countMsg").hide();
@@ -77,7 +123,11 @@ $("#drawGraph").click(function () {
 
     var edges = []
     var nodes = []
-
+    
+    if(edgeList.length == 0) {
+        setsTab(); 
+        return; 
+    }
 
     for (edge of edgeList) {
         let pair = edge.candidate
@@ -117,18 +167,24 @@ $("#drawGraph").click(function () {
 });
 
 $("#saveGraph").click(function () {
-    var savedGraph = $("#savedGraph");
+    $("#savedGraph svg").remove();
+    $("#savedGraph #graphTitle").remove();
+  
     var svgcopy = $("#currentsvg").clone();
     var titlecopy = $("#graphTitle").clone();
 
-    savedGraph.empty();
-    savedGraph.append(titlecopy);
-    savedGraph.append(svgcopy);
+    $("#savedGraph").append(titlecopy);
+    $("#savedGraph").append(svgcopy);
+  
+    $("#snap-msg").hide();
+    snapTab();
 });
 
 $("#clearGraph").click(function () {
-    $("#savedGraph").empty();
+    $("#savedGraph svg").remove();
+    $("#savedGraph #graphTitle").remove();
     $("#currentGraph").empty();
+    $("#snap-msg").show();
 });
 
 var prunedWords = [];
@@ -156,7 +212,7 @@ function display(results, cookedData, combinedData) {
     });
     topWords.reverse();
 
-    // display(topWordRankings, cookedData, combined);
+    $("#msg-box").hide();
 
     //Svg Attributes
     var width = $("#topWords").width();

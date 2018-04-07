@@ -17,51 +17,45 @@
 </head>
 
 <body>
-  <div classs="container card-columns">
-    <div class="row">
+  <nav id="nav" class="navbar navbar-light bg-light">
+    <a class="navbar-brand">MEANRedd</a>
+    <form class="form-inline mr-sm-2" onsubmit="return false">
+      <div class="input-group">
+          <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">/r/</span>
+          </div>
+          <input type="text" class="form-control  mr-sm-2" id="subreddit" placeholder="your-subreddit-stub">
+      </div>
+      
+      <select class="form-control mr-sm-2" id="radio">
+        <option value="new">New</option>
+        <option value="hot">Hot</option>
+        <option value="year">Top (Year)</option>
+        <option value="month">Top (Month)</option>
+        <option value="week">Top (Week)</option>
+      </select>
+      
+      <label class="checkbox-inline mr-sm-2">
+                <input class="form-check-label" id="includeComments" type="checkbox"> &nbsp;Comments</label>
+      
+      <button class="btn btn-outline-primary my-2 my-sm-0" id="submit">Begin</button>
+    </form>
+    <a href="#" id="toggle-info" class="text-muted" style="float:right;">Toggle Info</a>
+  </nav>
+  
+  <div classs="container card-columns" style="padding-left:2em">
+    <div id="info-row" class="row">
       <div class="col-sm-12 col-md-6">
         <div class="card">
           <div class="form-group card-body">
             <p class="h1">MEANRedd</p>
-
-            <p class="lead">A
-              <strong>work-in-progress</strong> data visualization tool for discovering meaningful words and emergent topics in a
-              corpus of Reddit submissions.</p>
-
-            <form action="">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="basic-addon1">/r/</span>
-                </div>
-                <input type="text" class="form-control" id="subreddit" placeholder="your-subreddit-stub">
-              </div>
-              <input type="text" class="form-control" id="stopwords" placeholder="Comma, delimited, stop, words">
-              <br/>
-
-              <div id="radio">
-                <label class="radiobutton-inline">
-                  <input type="radio" name="listingtype" value="new" checked> New</label>
-                <label class="radiobutton-inline">
-                  <input type="radio" name="listingtype" value="hot"> Hot</label>
-                <label class="radiobutton-inline">
-                  <input type="radio" name="listingtype" value="year"> Top (year)</label>
-                <label class="radiobutton-inline">
-                  <input type="radio" name="listingtype" value="month"> Top (month)</label>
-                <label class="radiobutton-inline">
-                  <input type="radio" name="listingtype" value="week"> Top (week)</label>
-              </div>
-
-              <label class="checkbox-inline">
-                <input class="form-check-label" id="includeComments" type="checkbox" name="includeComments" checked=true> Include Comments</label>
-              <br>
-
-              <input type="button" id="submit" name="submit" value="Begin" class="btn btn-primary" />
-            </form>
+            <p class="lead">
+              A <strong>work-in-progress</strong> data visualization tool for discovering meaningful words and emergent topics in a
+              corpus of Reddit submissions.
+            </p>
           </div>
         </div>
       </div>
-
-
 
       <div id="accordion" class="col-sm-12 col-md-6">
         <div class="card">
@@ -145,28 +139,36 @@
         </div>
       </div>
     </div>
-
-
     <br/>
     <div class="row">
       <div class="col-sm-12 col-md-6">
+        <div id="msg-box">
+          <div class="alert alert-primary" role="alert" id="msg">
+            Working...
+          </div>
+          <br/><br/>
+        </div>
+        <ul class="nav nav-tabs" id="tabs">
+          <li class="nav-item">
+            <a class="nav-link active" id="words-tab" href="#">Words</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="sets-tab" href="#">Frequent Sets</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="snap-tab" href="#">Snapshot</a>
+          </li>
+        </ul>
+        
         <div id="results" class="card card-body">
-          <h3 id="msg" style="display:none;">Working...</h3>
-          <br/>
-          <button class="btn btn-secondary" id="contribs">Toggle contributions</button>
-          <br/>
+          <h3>Meaningful Words</h3>
           <div id="topWords">
             <ol id="word_list" class="list-group"></ol>
           </div>
         </div>
-      </div>
-
-      <div class="col-sm-12 col-md-6">
-
         <div id="patternResults" class="card card-body">
           <h3 id="patternStatus">Waiting for data...</h3>
           <br/>
-
           <div class="row">
             <div class="input-group mb-3 col-6">
               <div class="input-group-prepend">
@@ -190,34 +192,33 @@
 
           <ul id="frequent_set_list" class="list-group"></ul>
         </div>
+        <div id="savedGraph" class="col-sm-12">
+          <p class="lead" id="snap-msg">No snapshot exists</p>
+        </div>
       </div>
-    </div>
-
-    <br/>
-    <div class="row" id="graphInfo">
-      <div class="col-12">
-        <h3>Meaningful Word Network</h3>
-        <div class="btn-group btn-group-lg" role="group">
-          <button class="btn btn-primary" id="drawGraph">
-            Draw Network
-          </button>
-          <button class="btn btn-primary" id="saveGraph">
-            Take Snapshot
-          </button>
-          <button class="btn btn-primary" id="clearGraph">
-            Clear
-          </button>
+      <div class="col-sm-12 col-md-6">
+        <div class="row" id="graphInfo">
+          <div class="col-12">
+            <div class="btn-group btn-group" role="group">
+              <button class="btn btn-primary" id="drawGraph">
+                Draw Network
+              </button>
+              <button class="btn btn-primary" id="saveGraph">
+                Take Snapshot
+              </button>
+              <button class="btn btn-primary" id="clearGraph">
+                Clear
+              </button>
+            </div>
+          </div>
+        </div>
+        <br/>
+        <div class="row">
+          <div id="currentGraph" class="col-sm-12">
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="row">
-      <div id="currentGraph" class="col-sm-12 col-md-6">
-      </div>
-      <div id="savedGraph" class="col-sm-12 col-md-6">
-      </div>
-    </div>
-
   </div>
 </body>
 
@@ -232,6 +233,9 @@
     $('[data-toggle="tooltip"]').tooltip();
     $("#countMsg").hide();
     $("#graphInfo").hide();
+    $("#tabs").hide();
+    $("#msg-box").hide();
+    $("#savedGraph").hide();
   }
 
   function updateCount(count, max, stage) {
