@@ -2,262 +2,285 @@
 <html>
 
 <head>
-  <meta charset="UTF-8">
-  <title>MEANRedd Prototype</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-    crossorigin="anonymous">
-  <link rel="stylesheet" href="style.css">
-  <script src="https://d3js.org/d3.v4.min.js"></script>
-  <script src="//d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-    crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-    crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <title>MEANRedd Prototype</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="//d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 </head>
 
 <body>
-  <nav id="nav" class="navbar navbar-light bg-light">
-    <a class="navbar-brand">MEANRedd</a>
-    <form class="form-inline mr-sm-2" onsubmit="return false">
-      <div class="input-group">
-          <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1">/r/</span>
-          </div>
-          <input type="text" class="form-control  mr-sm-2" id="subreddit" placeholder="your-subreddit-stub">
-      </div>
-      
-      <select class="form-control mr-sm-2" id="radio">
-        <option value="new">New</option>
-        <option value="hot">Hot</option>
-        <option value="year">Top (Year)</option>
-        <option value="month">Top (Month)</option>
-        <option value="week">Top (Week)</option>
-      </select>
-      
-      <label class="checkbox-inline mr-sm-2">
+    <nav id="nav" class="navbar navbar-light bg-light">
+        <a class="navbar-brand">MEANRedd</a>
+        <form class="form-inline mr-sm-2" onsubmit="return false">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">/r/</span>
+                </div>
+                <input type="text" class="form-control  mr-sm-2" id="subreddit" placeholder="your-subreddit-stub">
+            </div>
+
+            <select class="form-control mr-sm-2" id="radio">
+                <option value="new">New</option>
+                <option value="hot">Hot</option>
+                <option value="year">Top (Year)</option>
+                <option value="month">Top (Month)</option>
+                <option value="week">Top (Week)</option>
+            </select>
+
+            <label class="checkbox-inline mr-sm-2">
                 <input class="form-check-label" id="includeComments" type="checkbox"> &nbsp;Comments</label>
-      
-      <button class="btn btn-outline-primary my-2 my-sm-0" id="submit">Begin</button>
-    </form>
-    <a href="#" id="toggle-info" class="text-muted" style="float:right;">Toggle Info</a>
-  </nav>
-  
-  <div classs="container card-columns" style="padding-left:2em">
-    <div id="info-row" class="row" style="padding-top:2em;">
-      <div class="col-sm-12 col-md-6">
-        <div class="card">
-          <div class="form-group card-body">
-            <p class="h1">MEANRedd</p>
-            <p class="lead">
-              A <strong>work-in-progress</strong> data visualization tool for discovering meaningful words and emergent topics in a
-              corpus of Reddit submissions.
-            </p>
-            <p>This tool is in the prototyping stage and does not represent the intended functionality.</p>
-            <div class="alert alert-warning" role="alert">
-              <h4 class="alert-heading">Warning!</h4>
-              <hr>
-              <p class="mb-0">A high volume of API requests will be sent if you choose to include comments in the data scraping process. This may be against Reddit's <a href="https://www.reddit.com/wiki/api-terms">terms of use</a>. You have been warned.</p>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div id="accordion" class="col-sm-12 col-md-6">
-        <div class="card">
-          <div class="card-header" id="headingOne">
-            <h5 class="mb-0">
-              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                How to use
-              </button>
-            </h5>
-          </div>
-          <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
-            <div class="card-body">
-              <h3>How to use</h3>
-              <p class="lead">Step One: Data Collection</p>
-              <ul>
-                <li>Specify a valid subreddit name stub (i.e.
-                  <code>spacex</code>)
-                </li>
-                <br/>
-                <li>Reddit has a few types of submission listings we can scrape data from:
-                  <code>New</code>,
-                  <code>Top</code> and
-                  <code>Hot</code>.
-                  <code>Top</code> can be filtered by day, week, month and year.</li>
-                <br/>
-                <li>Including comments will greatly increase the available data but at the tradeoff of making a large number of API calls to Reddit.</li>
-                <ul><li>The quality of the data associated with comments is generally lesser than that of the posts themselves. </li></ul>
-              </ul>
-              <p class="lead">Step Two: Data Visualization</p>
-              
-              <ul>
-                <li>The tool will process the retrieved data and attempt to create a network between frequently used sets of meaningful words.</li>
-                <br/>
-                <li>If no frequent itemsets are found, try lowering the minimum support threshold.</li>
-                <ul><li>Too low of a threshold will result in longer computation times.</li></ul>
-                <br/>
-                <li>Remove undesired or subreddit-specific stop words by selecting them in the meaningful word listing.</li>
-                <ul><li>A list of common English stop words have already been loaded.</li></ul>
-                <br/>
-                <li>If the tool becomes unresponsive, refresh the page and try again.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header" id="headingTwo">
-            <h5 class="mb-0">
-              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                How do we determine meaningfulness
-              </button>
-            </h5>
-          </div>
-          <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-            <div class="card-body">
-              <h3>Meaningfulness</h3>
-              Our proposed meaningfulness score will focus not only on the
-              <code>frequency</code> of a given word over the subreddit, but it will also be scored based on the
-              <code>karma</code> of the post that the word occurs in. This helps distinguish between a common word and a meaningful word.
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header" id="headingThree">
-            <h5 class="mb-0">
-              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                About
-              </button>
-            </h5>
-          </div>
-          <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-            <div class="card-body">
-              <p>This data visualization tool was made as a course project for <a href="http://vialab.science.uoit.ca/portfolio/csci-4210">CSCI4210U Information Visualization</a> taught by <a href="http://vialab.science.uoit.ca/portfolio/christopher-m-collins">Dr. Christopher Collins</a> @ UOIT.</p>
-              <p class="lead">Created by</p>
-              <ul>
-                <li><a href="https://lachlanjohnston.ca">Lachlan Johnston</a></li>
-                <li>Michael Lombardo</li>
-                <li><a href="https://spencerbryson.ca">Spencer Bryson</a></li>
-              </ul>
-              <a class="lead" href="https://github.com/SpencerCBryson/MEANRedd">View the source @ GitHub</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <br/>
-    <div class="row">
-      <div class="col-sm-12 col-md-6">
-        <div id="msg-box">
-          <div class="alert alert-primary" role="alert" id="msg">
-            Working...
-          </div>
-          <br/><br/>
-        </div>
-        <ul class="nav nav-tabs" id="tabs">
-          <li class="nav-item">
-            <a class="nav-link active" id="words-tab" href="#">Words</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="sets-tab" href="#">Frequent Sets</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="snap-tab" href="#">Snapshot</a>
-          </li>
-        </ul>
-        
-        <div id="results" class="card card-body">
-          <h3>Meaningful Words</h3>
-          <div id="topWords">
-            <ol id="word_list" class="list-group"></ol>
-          </div>
-        </div>
-        <div id="patternResults" class="card card-body">
-          <h3 id="patternStatus">Waiting for data...</h3>
-          <br/>
-          <div class="row">
-            <div class="input-group mb-3 col-6">
-              <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon1">Min support</span>
-              </div>
-              <input type="text" class="form-control" id="min_support" data-toggle="tooltip" title="A low support may result in high computation times">
+            <button class="btn btn-outline-primary my-2 my-sm-0" id="submit">Begin</button>
+        </form>
+        <a href="#" id="toggle-info" class="text-muted" style="float:right;">Toggle Info</a>
+    </nav>
+
+    <div classs="container card-columns" style="padding-left:2em">
+        <div id="info-row" class="row" style="padding-top:2em;">
+            <div class="col-sm-12 col-md-6">
+                <div class="card">
+                    <div class="form-group card-body">
+                        <p class="h1">MEANRedd</p>
+                        <p class="lead">
+                            A
+                            <strong>work-in-progress</strong> data visualization tool for discovering meaningful words and emergent
+                            topics in a corpus of Reddit submissions.
+                        </p>
+                        <p>This tool is in the prototyping stage and does not represent the intended functionality.</p>
+                        <div class="alert alert-warning" role="alert">
+                            <h4 class="alert-heading">Warning!</h4>
+                            <hr>
+                            <p class="mb-0">A high volume of API requests will be sent if you choose to include comments in the data scraping
+                                process. This may be against Reddit's
+                                <a href="https://www.reddit.com/wiki/api-terms">terms of use</a>. You have been warned.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="col-6">
-              <button class="btn btn-secondary" id="recompute_apriori">Recompute</button>
+            <div id="accordion" class="col-sm-12 col-md-6">
+                <div class="card">
+                    <div class="card-header" id="headingOne">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                How to use
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                        <div class="card-body">
+                            <h3>How to use</h3>
+                            <p class="lead">Step One: Data Collection</p>
+                            <ul>
+                                <li>Specify a valid subreddit name stub (i.e.
+                                    <code>spacex</code>)
+                                </li>
+                                <br/>
+                                <li>Reddit has a few types of submission listings we can scrape data from:
+                                    <code>New</code>,
+                                    <code>Top</code> and
+                                    <code>Hot</code>.
+                                    <code>Top</code> can be filtered by day, week, month and year.</li>
+                                <br/>
+                                <li>Including comments will greatly increase the available data but at the tradeoff of making
+                                    a large number of API calls to Reddit.</li>
+                                <ul>
+                                    <li>The quality of the data associated with comments is generally lesser than that of the
+                                        posts themselves. </li>
+                                </ul>
+                            </ul>
+                            <p class="lead">Step Two: Data Visualization</p>
+
+                            <ul>
+                                <li>The tool will process the retrieved data and attempt to create a network between frequently
+                                    used sets of meaningful words.</li>
+                                <br/>
+                                <li>If no frequent itemsets are found, try lowering the minimum support threshold.</li>
+                                <ul>
+                                    <li>Too low of a threshold will result in longer computation times.</li>
+                                </ul>
+                                <br/>
+                                <li>Remove undesired or subreddit-specific stop words by selecting them in the meaningful word
+                                    listing.</li>
+                                <ul>
+                                    <li>A list of common English stop words have already been loaded.</li>
+                                </ul>
+                                <br/>
+                                <li>If the tool becomes unresponsive, refresh the page and try again.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingTwo">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                How do we determine meaningfulness
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                        <div class="card-body">
+                            <h3>Meaningfulness</h3>
+                            Our proposed meaningfulness score will focus not only on the
+                            <code>frequency</code> of a given word over the subreddit, but it will also be scored based on the
+                            <code>karma</code> of the post that the word occurs in. This helps distinguish between a common word and a meaningful
+                            word.
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingThree">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                About
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                        <div class="card-body">
+                            <p>This data visualization tool was made as a course project for
+                                <a href="http://vialab.science.uoit.ca/portfolio/csci-4210">CSCI4210U Information Visualization</a> taught by
+                                <a href="http://vialab.science.uoit.ca/portfolio/christopher-m-collins">Dr. Christopher Collins</a> @ UOIT.</p>
+                            <p class="lead">Created by</p>
+                            <ul>
+                                <li>
+                                    <a href="https://lachlanjohnston.ca">Lachlan Johnston</a>
+                                </li>
+                                <li>Michael Lombardo</li>
+                                <li>
+                                    <a href="https://spencerbryson.ca">Spencer Bryson</a>
+                                </li>
+                            </ul>
+                            <a class="lead" href="https://github.com/SpencerCBryson/MEANRedd">View the source @ GitHub</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-
-          <div class="alert alert-primary" role="alert" id="countMsg">
-            No frequent sets found, try lowering the minimum support.
-          </div>
-
-          <p>Count:
-            <span id="frequent_set_count"></span>
-          </p>
-
-          <ul id="frequent_set_list" class="list-group"></ul>
-        </div>
-        <div id="savedGraph" class="col-sm-12">
-          <p class="lead" id="snap-msg">No snapshot exists</p>
-        </div>
-      </div>
-      <div class="col-sm-12 col-md-6">
-        <div class="row" id="graphInfo">
-          <div class="col-12">
-            <div class="btn-group btn-group" role="group">
-              <button class="btn btn-primary" id="drawGraph">
-                Draw Network
-              </button>
-              <button class="btn btn-primary" id="saveGraph">
-                Take Snapshot
-              </button>
-              <button class="btn btn-primary" id="clearGraph">
-                Clear
-              </button>
-            </div>
-          </div>
         </div>
         <br/>
         <div class="row">
-          <div id="currentGraph" class="col-sm-12">
-          </div>
+            <div class="col-sm-12 col-md-6">
+                <div id="msg-box">
+                    <div class="alert alert-primary" role="alert" id="msg">
+                        Working...
+                    </div>
+                    <br/>
+                    <br/>
+                </div>
+                <ul class="nav nav-tabs" id="tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="words-tab" href="#">Words</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="sets-tab" href="#">Frequent Sets</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="snap-tab" href="#">Snapshot</a>
+                    </li>
+                </ul>
+
+                <div id="results" class="card card-body">
+                    <div>
+                        <h3 style="width: 50%;">Meaningful Words</h3>
+                    </div>
+                    <div id="topWords">
+                        <ol id="word_list" class="list-group"></ol>
+                    </div>
+                </div>
+                <div id="patternResults" class="card card-body">
+                    <h3 id="patternStatus">Waiting for data...</h3>
+                    <br/>
+                    <div class="row">
+                        <div class="input-group mb-3 col-6">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Min support</span>
+                            </div>
+                            <input type="text" class="form-control" id="min_support" data-toggle="tooltip" title="A low support may result in high computation times">
+                        </div>
+
+                        <div class="col-6">
+                            <button class="btn btn-secondary" id="recompute_apriori">Recompute</button>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-primary" role="alert" id="countMsg">
+                        No frequent sets found, try lowering the minimum support.
+                    </div>
+
+                    <p>Count:
+                        <span id="frequent_set_count"></span>
+                    </p>
+
+                    <ul id="frequent_set_list" class="list-group"></ul>
+                </div>
+                <div id="savedGraph" class="col-sm-12">
+                    <p class="lead" id="snap-msg">No snapshot exists</p>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <div class="row" id="graphInfo">
+                    <div class="col-12">
+                        <div class="btn-group btn-group" role="group">
+                            <button class="btn btn-primary" id="drawGraph">
+                                Draw Network
+                            </button>
+                            <button class="btn btn-primary" id="saveGraph">
+                                Take Snapshot
+                            </button>
+                            <button class="btn btn-primary" id="clearGraph">
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div id="currentGraph" class="col-sm-12">
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </body>
 
 
 
 <script>
-  //for functions that need to exist before the main functionality, i.e. callbacks
-  window.onload = function () {
-    $("#contribs").hide();
-    $("#results").hide();
-    $("#patternResults").hide();
-    $('[data-toggle="tooltip"]').tooltip();
-    $("#countMsg").hide();
-    $("#graphInfo").hide();
-    $("#tabs").hide();
-    $("#msg-box").hide();
-    $("#savedGraph").hide();
-  }
+    //for functions that need to exist before the main functionality, i.e. callbacks
+    window.onload = function () {
+        $("#contribs").hide();
+        $("#results").hide();
+        $("#patternResults").hide();
+        $('[data-toggle="tooltip"]').tooltip();
+        $("#countMsg").hide();
+        $("#graphInfo").hide();
+        $("#tabs").hide();
+        $("#msg-box").hide();
+        $("#savedGraph").hide();
+    }
 
-  function updateCount(count, max, stage) {
-    var stage_txt;
-    if (stage == 1)
-      stage_txt = "Getting comments...";
-    else
-      stage_txt = "Getting submissions..."
+    function updateCount(count, max, stage) {
+        var stage_txt;
+        if (stage == 1)
+            stage_txt = "Getting comments...";
+        else
+            stage_txt = "Getting submissions..."
 
-    $("#msg").text(stage_txt + "(" + count + "/" + max + ")");
-  }
+        $("#msg").text(stage_txt + "(" + count + "/" + max + ")");
+    }
 
-  var edgeList;
+    var edgeList;
 
-  
+
 </script>
 <script src="stopWords.js"></script>
 <script src="patternAnalysis.js"></script>
