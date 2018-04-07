@@ -145,8 +145,7 @@ function recomputeApriori() {
     $("#countMsg").hide();
 
     $("#msg-box").show();
-    $("#msg").empty();
-    $("#msg").append("<span class='fa fa-refresh fa-spin'></span>" + "  Recomputing Apriori...");
+    $("#msg-text").text("Recomputing Apriori...");
     
     var aprioriWorker = new Worker('patternAnalysis.js');
     

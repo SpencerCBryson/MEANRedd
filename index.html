@@ -171,7 +171,8 @@
             <div class="col-sm-12 col-md-6">
                 <div id="msg-box">
                     <div class="alert alert-primary" role="alert" id="msg">
-                        Working...
+                        <span class='fa fa-refresh fa-spin'></span><span>  </span>
+                        <span id="msg-text"></span>
                     </div>
                     <br/>
                     <br/>
@@ -275,8 +276,7 @@
         else
             stage_txt = "Getting submissions..."
 
-        $("#msg").empty()
-        $("#msg").append("<span class='fa fa-refresh fa-spin'></span>  " + stage_txt + "(" + count + "/" + max + ")");
+        $("#msg-text").text(stage_txt + "(" + count + "/" + max + ")");
     }
 
     var edgeList;
