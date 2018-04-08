@@ -1,3 +1,5 @@
+var chartWidth = 0;
+
 $("#submit").click(function () {
     let subreddits_raw = $("#subreddit").val()
     let usr_stop_words_raw = $("#stopwords").val()
@@ -18,15 +20,20 @@ $("#submit").click(function () {
 
     $("#frequent_set_list").empty()
     $("#word_list").empty()
-    $("#patternResults").hide()
     $("#countMsg").hide();
     $("#graphInfo").hide();
     $("#info-row").hide();
 
-
+    $("#msg-error").hide();
     $("#msg-box").show();
-    $("#results").show()
-    $("#tabs").show()
+    $("#compute-spinner").show();
+
+    if (!graphed) {
+        $("#results").show();
+        $("#tabs").show();
+    }
+
+    chartWidth = $("#topWords").width();
 
     // for first run
     $("#min_support").val(0.0)
@@ -66,6 +73,9 @@ $("#submit").click(function () {
 
         console.log("querying: " + subreddits_raw)
     } else {
+        $("#msg").hide();
+        $("#msg-error").show();
+
         console.error("no entry")
     }
 });
@@ -113,36 +123,6 @@ $("#snap-tab").click(function() {
     snapTab();
 });
 
-function displayPatterns(frequentSets) {
-    var container = $("#patternResults");
-    var ul = $("#frequent_set_list");
-    var min_sup = $("#min_support");
-    
-    console.log("Done apriori")
-    
-    min_sup.val(support)
-    ul.empty()
-    
-    if(frequentSets.length == 0){
-        setsTab();
-        $("#countMsg").show()
-    }
-    $("#frequent_set_count").text(frequentSets.length)
-    
-    $("#patternStatus").text("Frequent sets of meaningful words");
-    
-    for (item of frequentSets) {
-        words = item.candidate.reduce((a, b) => String(a) + ', ' + String(b));
-        $(ul).append('<li class="list-group-item ellipsis">' + '<strong class="ellipsis-item"> ' + words + '</strong> '
-                    + '<span class="badge badge-primary badge-pill">' + item.frequency
-                    + '</span></li>');
-    }
-    
-    container.append(ul)
-    //container.show();
-    $("#graphInfo").show();
-}
-
 var aprioriWorker = new Worker('patternAnalysis.js');
 var runningApriori = false;
 
@@ -152,26 +132,35 @@ function recomputeApriori() {
     $("#countMsg").hide();
 
     $("#msg-box").show();
-    $("#msg-text").text("Recomputing Apriori...");
+    $("#msg-text").text("Computing Apriori...");
     
     function finished(response) {
         var edgeList = response.data.edgeList;
-        displayPatterns(response.data.frequentSets);
+        var frequentSets = response.data.frequentSets;
+
+        if (frequentSets.length == 0) {
+            setsTab();
+            $("#countMsg").show();
+        }            
 
         if (edgeList.length > 0) {
-            graphGlobal = generateGraph(edgeList);
+            var graph = generateGraph(edgeList);
             
-            if (graphed)
-                drawGraph(graphGlobal);
-            else
-                init(graphGlobal);
-
+            if (graphed) {
+                drawGraph(graph);
+                displayFrequentSets(frequentSets);
+            } else {
+                initGraph(graph);
+                initFrequent(frequentSets);
+            }
             graphed = true;
         }
         var s = response.data.support;
         
         $("#min_support").val(s.toFixed(2));
         $("#msg-box").hide();
+        $("#graphInfo").show();
+        $("#frequent_set_count").text(frequentSets.length);
 
         runningApriori = false;
     }
@@ -180,8 +169,6 @@ function recomputeApriori() {
         aprioriWorker.terminate();
         aprioriWorker = new Worker('patternAnalysis.js');
     }
-
-    console.log(aprioriWorker)
 
     runningApriori = true;
     aprioriWorker.addEventListener("message", finished, false);
@@ -267,165 +254,6 @@ $("#saveGraph").click(function () {
     $("#snap-msg").hide();
     snapTab();
 });
-
-$("#clearGraph").click(function () {
-    $("#savedGraph svg").remove();
-    $("#savedGraph #graphTitle").remove();
-    $("#currentGraph").empty();
-    $("#snap-msg").show();
-});
-
-
-
-var prunedWords = [];
-// var palette = ['#80b1d3','#bebada'];
-var palette = ['#66c2a5','#fc8d62'];
-var pruned = d3.scaleOrdinal()
-        .domain([false, true])
-        .range([1.0, 0.3]);
-
-function display(results, cookedData, combinedData) {
-    wordScores = combinedData.wordScores;
-    wordCounts = combinedData.wordCounts;
-    let postCounts = Object.keys(data).map(sr => data[sr].length)
-
-    //Make a collection of the top words and their values
-    var topWords = [];
-    results.forEach(function (entry) {
-        var tempObj = {}
-        tempObj.word = entry;
-        tempObj.value = wordScores[entry];
-        tempObj.count = wordCounts[entry];
-        if (prunedWords.includes(tempObj.word)) tempObj.pruned = true;
-        else tempObj.pruned = false;
-        topWords.push(tempObj);
-    });
-    topWords.reverse();
-
-    $("#msg-box").hide();
-
-    //Svg Attributes
-    var width = $("#topWords").width();
-    var margin = { top: 20, right: 20, bottom: 30, left: 70 };
-    var bandWidth = 50;
-    var height = bandWidth * nPosts;
-
-    var xUpperBound = d3.max(topWords, d => d.value);
-
-    //Scale definition
-    var x = d3.scaleLinear()
-        .domain([0, xUpperBound])
-        .range([0, width]);
-    var y = d3.scaleBand()
-        .domain(topWords.map(function (d) { return d.word; }))
-        .padding(0.1)
-        .range([height, 0]);
-    
-    var barType = d3.scaleOrdinal()
-        .domain(["score", "count"])
-        .range(palette)
-
-    d3.select("#freq-words").remove();
-  
-    var svg = d3.select("#topWords").append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .attr("id","freq-words");
-
-    var canvas = svg.append("g")
-        // .attr("transform", "translate(" + 0 + "," + margin.top + ")")
-        .attr("height", height + 50)
-        .attr("id", "canvas");
-
-    // canvas.append("g")
-    //     .attr("class", "y axis")
-    //     .call(d3.axisLeft(y));
-
-    // var xAxis = d3.axisBottom(x)
-    //     .ticks(4);
-
-    // svg.append("g")
-    //     .attr("transform", "translate(0," + height + ")")
-    //     .call(customXAxis)
-
-    // function customXAxis(g) {
-    //     g.call(xAxis);
-    //     g.select(".domain").remove();
-    //     g.selectAll(".tick:not(:first-of-type) line").attr("stroke", "#777").attr("stroke-dasharray", "2,2");
-    //     g.selectAll(".tick text").attr("x", 4).attr("dy", -4);
-    //     }
-
-    var bar = canvas
-        .selectAll(".bar")
-        .data(topWords)
-        .enter()
-        .append("g")
-            .attr("class", "item")
-          .on("click", removeWord);
-
-    // gray background for context
-    console.log(topWords[0])
-    bar.append("rect")
-        .attr("class", "context-bar")
-        .attr("x", 0)
-        .attr("y", d => y(d.word))
-        .attr("width", width)
-        .attr("height", y.bandwidth())
-        .attr("fill", "#eaedf2")
-        .style("z-index", -1);
-
-    // score bar
-    bar.append("rect")
-        .attr("class", "bar")
-        .attr("x", 0)
-        .attr("height", y.bandwidth())
-        .attr("y", d => y(d.word))
-        .attr("width", d => x(d.value - d.count))
-        .attr("fill", d => barType("score"))
-        .attr("opacity", d => pruned(d.pruned))
-        .append("title")
-          .text(d => "Karma:" + (d.value - d.count));
-
-    // count bar
-    bar.append("rect")
-        .attr("class", "bar")
-        .attr("x", d => x(d.value - d.count))
-        .attr("height", y.bandwidth())
-        .attr("y", function (d) { return y(d.word); })
-        .attr("width", d => x(d.count))
-        .attr("fill", d => barType("count"))
-        .attr("opacity", d => pruned(d.pruned))
-        .append("title")
-          .text(d => "Count:" + d.count);
-
-        //.on("click", removeWord);
-        
-    bar.append("text")
-        .text(d => d.value.toFixed(2))
-        .attr("x", d => 5)
-        .attr("y", d => y(d.word) + (y.bandwidth() - 5))
-        .style("font-family", "sans-serif")
-        .style("font-size", "10px")
-        .style("fill", "black")
-        .style("text-decoration", d => (d.pruned) ? "italics line-through" : "none")
-        .style("z-index", 1);
-
-    bar.append("text")
-        .text(d => d.word)
-        .attr("x", 5)
-        .attr("y", d => y(d.word) + 20)
-        .style("font-family", "sans-serif")
-        .style("font-size", "17px")
-        .style("fill", "black")
-        .style("text-decoration", d => (d.pruned) ? "italics line-through" : "none")
-        .style("z-index", 1);
-
-    // bar.exit().remove();
-}
-
-function update() {
-    
-}
 
 function removeWord(selection, index, group) {
     selection.pruned = !selection.pruned;

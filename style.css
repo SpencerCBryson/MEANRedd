@@ -60,13 +60,22 @@ body {
 }
 
 #results {
-  height: 500px;
+  height: 600px;
 }
 
 #topWords {
   height: 1000px;
   overflow: auto !important;
 }
+
+#patternResults {
+    height: 700px;
+}
+
+#frequentSetsChart {
+    height: 1000px;
+    overflow: auto !important;
+  }
 
 .tick text{
   font-size: 14px;

@@ -38,9 +38,9 @@
             <label class="checkbox-inline mr-sm-2">
                 <input class="form-check-label" id="includeComments" type="checkbox"> &nbsp;Comments</label>
 
-            <button class="btn btn-outline-primary my-2 my-sm-0" id="submit">Begin</button>
+            <button class="btn btn-primary my-2 my-sm-0" id="submit">Begin</button>
         </form>
-        <a href="#" id="toggle-info" class="text-muted" style="float:right;">Toggle Info</a>
+        <button id="toggle-info" class="btn btn-outline-secondary">Toggle Info</button>
     </nav>
 
     <div classs="container card-columns" style="padding-left:2em">
@@ -171,9 +171,10 @@
             <div class="col-sm-12 col-md-6">
                 <div id="msg-box">
                     <div class="alert alert-primary" role="alert" id="msg">
-                        <span class='fa fa-refresh fa-spin'></span><span>  </span>
+                        <span id="compute-spinner" class='fa fa-refresh fa-spin'></span>&nbsp;&nbsp;
                         <span id="msg-text"></span>
                     </div>
+                    <div class="alert alert-danger" role="alert" id="msg-error">Please select a valid subreddit!</div>
                     <br/>
                     <br/>
                 </div>
@@ -193,14 +194,18 @@
                     <div>
                         <h3 style="width: 50%;">Meaningful Words</h3>
                     </div>
+                    <div>
+                        <p>To <code>filter</code> words from the visulization, select the bar of a word below. </p>
+                        <p>Bars are composed of: <span style="color: #66c2a5">karma score</span> and <span style="color: #fc8d62">frequency</span></p>
+                    </div>
                     <div id="topWords">
                         <ol id="word_list" class="list-group"></ol>
                     </div>
                 </div>
                 <div id="patternResults" class="card card-body">
-                    <h3 id="patternStatus">Waiting for data...</h3>
+                    <h3 id="patternStatus">Frequent Itemsets</h3>
                     <br/>
-                    <div class="row">
+                    <div class="row" style="display: -webkit-box">
                         <div class="input-group mb-3 col-6">
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon1">Min support</span>
@@ -217,11 +222,12 @@
                         No frequent sets found, try lowering the minimum support.
                     </div>
 
-                    <p>Count:
+                    <p>Edge Count:
                         <span id="frequent_set_count"></span>
                     </p>
 
-                    <ul id="frequent_set_list" class="list-group"></ul>
+                    <div id="frequentSetsChart">
+                    </div>
                 </div>
                 <div id="savedGraph" class="col-sm-12">
                     <p class="lead" id="snap-msg">No snapshot exists</p>
@@ -232,13 +238,10 @@
                     <div class="col-12">
                         <div class="btn-group btn-group" role="group">
                             <button class="btn btn-primary" id="drawGraph">
-                                Draw Network
+                                <i class="fa fa-refresh"></i>  Reset
                             </button>
                             <button class="btn btn-primary" id="saveGraph">
-                                Take Snapshot
-                            </button>
-                            <button class="btn btn-primary" id="clearGraph">
-                                Clear
+                                    <i class="fa fa-camera-retro"></i>  Take Snapshot
                             </button>
                         </div>
                     </div>
@@ -285,6 +288,7 @@
 </script>
 <script src="stopWords.js"></script>
 <script src="patternAnalysis.js"></script>
+<script src="barCharts.js"></script>
 <script src="getData.js"></script>
 <script src="forcedirected.js"></script>
 <script src="main.js"></script>

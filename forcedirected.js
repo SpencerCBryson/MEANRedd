@@ -19,7 +19,7 @@ var simulation = d3.forceSimulation()
             .force("y", d3.forceY(height / 2))
             .force("x", d3.forceX(width / 2))
 
-function init(graph) {
+function initGraph(graph) {
     svg = d3.select(currentDiv)
         .append("svg")
         .attr("width", width)
