@@ -26,14 +26,14 @@ $("#submit").click(function () {
     $("#msg-error").hide();
     $("#msg-box").show();
     $("#compute-spinner").show();
-    $("#currentGraph").empty();
+    
 
     if (!graphed) {
         $("#results").show();
         $("#tabs").show();
     }
 
-    chartWidth = Math.max($("#topWords").width(), $("#patternResults").width(), chartWidth);
+    chartWidth = Math.max($("#topWords").width(), $("#patternResults").width(), $("#savedGraph").width() - 40);
 
     // for first run
     $("#min_support").val(0.0)
@@ -145,16 +145,24 @@ function recomputeApriori() {
         
         $("#graphHeader", "#currentGraph").remove()
 
+        
+        var graph = generateGraph(edgeList);
+
         if (edgeList.length > 0) {
-            var graph = generateGraph(edgeList);
-            
             if (graphed) {
                 drawGraph(graph);
             } else {
                 initGraph(graph);
             }
+
+            drawGradient(frequentSets);
+
             graphed = true;
+        } else {
+            graphed = false;
+            $("#currentGraph").empty();
         }
+        
         var s = response.data.support;
 
         if (graphedFq) {
@@ -169,7 +177,6 @@ function recomputeApriori() {
         $("#msg-box").hide();
         $("#graphInfo").show();
         $("#frequent_set_count").text(frequentSets.length);
-        drawGradient(frequentSets);
 
         runningApriori = false;
     }
@@ -202,7 +209,7 @@ function generateGraph(edgeList) {
     var nodes = []
     
     if(edgeList.length == 0) {
-        setsTab(); 
+        setsTab();
         return; 
     }
 
