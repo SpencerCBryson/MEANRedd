@@ -28,6 +28,9 @@ $("#submit").click(function () {
     $("#results").show()
     $("#tabs").show()
 
+    // for first run
+    $("#min_support").val(0.0)
+
     // add users specified stop words
     if (usr_stop_words_raw) {
         let usr_stop_words = usr_stop_words_raw.replace(/\s/g, '').split(',')
@@ -120,9 +123,10 @@ function displayPatterns(frequentSets) {
     min_sup.val(support)
     ul.empty()
     
-    if(frequentSets.length == 0)
+    if(frequentSets.length == 0){
+        setsTab();
         $("#countMsg").show()
-        
+    }
     $("#frequent_set_count").text(frequentSets.length)
     
     $("#patternStatus").text("Frequent sets of meaningful words");
@@ -136,7 +140,7 @@ function displayPatterns(frequentSets) {
     
     container.append(ul)
     //container.show();
-    $("#graphInfo").show()
+    $("#graphInfo").show();
 }
 
 function recomputeApriori() {
@@ -151,26 +155,32 @@ function recomputeApriori() {
     
     function finished(response) {
         var edgeList = response.data.edgeList;
-        
         displayPatterns(response.data.frequentSets);
-        graphGlobal = generateGraph(edgeList);
-        
-        if (graphed)
-            drawGraph(graphGlobal);
-        else
-            init(graphGlobal);
+
+        if (edgeList.length > 0) {
+            graphGlobal = generateGraph(edgeList);
+            
+            if (graphed)
+                drawGraph(graphGlobal);
+            else
+                init(graphGlobal);
+
+            graphed = true;
+        }
         var s = response.data.support;
         
         $("#min_support").val(s.toFixed(2));
         $("#msg-box").hide();
-        graphed = true;
     }
     
+
+    console.log(support)
+
     aprioriWorker.addEventListener("message", finished, false);
     aprioriWorker.postMessage({ 
         topWords: result.filter(word => !prunedWords.includes(word)).slice(0, nPosts), 
         data: data, 
-        support: graphed ? support : 0
+        support: support
     });
 }
 
@@ -341,6 +351,7 @@ function display(results, cookedData, combinedData) {
         .data(topWords)
         .enter()
         .append("g")
+            .attr("class", "item")
           .on("click", removeWord);
 
     // gray background for context
@@ -417,15 +428,20 @@ function removeWord(selection, index, group) {
     
     console.log(prunedWords)
 
-    d3.selectAll(".bar")
+    var items = d3.selectAll(".item")
         // .datum(d)
+    items.selectAll(".bar")
         .transition()
-        .attr("opacity", d => pruned(d.pruned))
-        .duration(750);
+            .attr("opacity", d => pruned(d.pruned))
+            .duration(750);
 
-    d3.selectAll(".tick text")
-        .transition()
-        .attr("class", d => prunedWords.includes(d) ? "prunedText" : "none");
+    items.selectAll("text")
+        .attr("class", d => d.pruned ? "prunedText" : "none");
+
+
+    // d3.selectAll(".tick text")
+    //     .transition()
+    //     .attr("class", d => prunedWords.includes(d) ? "prunedText" : "none");
     
 //    var newGraph = {};
 //    
