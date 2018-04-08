@@ -33,7 +33,7 @@ $("#submit").click(function () {
         $("#tabs").show();
     }
 
-    chartWidth = Math.max($("#topWords").width(), $("#patternResults").width(), $("#savedGraph").width() - 40);
+    chartWidth = Math.max($("#topWords").width(), $("#patternResults").width(), $("#savedGraph").width() - 40) - 5;
 
     // for first run
     $("#min_support").val(0.0)

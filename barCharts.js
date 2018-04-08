@@ -10,11 +10,11 @@ function initFrequent(frequentSets) {
     frequentSetsChart = d3.select("#frequentSetsChart")
         .append("svg")
         .attr("id", "frequentSetsSvg")
-        .attr("width", width)
+        .attr("width", chartWidth)
         .attr("height", height);
 
     frequentSetsCanvas = frequentSetsChart.append("g")
-        .attr("width", width)
+        .attr("width", chartWidth)
         .attr("height", height + 50)
         .attr("id", "canvas2");
 
