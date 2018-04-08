@@ -32,8 +32,116 @@ function initGraph(graph) {
     drawGraph(graph);
 }
 
+var gradientXScale;
+
+function gradientTooltip(selected) {
+    var location = gradientXScale(selected.frequency);
+
+    timer.stop();
+
+    var tooltip = d3.select("#currentGraph #gradientTooltip");
+
+    tooltip.html("<span class='tooltipText'>"
+                 + selected.candidate + "<br/>" + "frequency: " + selected.frequency + "</span>")
+        .transition()
+            .duration(750)
+                .style("left", (location - 60) + "px")		
+                .style("top", + 30 + "px")
+                .style("opacity", 1.0);
+}
+
+var timer = d3.timer(_ => _);
+
+function hoverGradientEdge(selected, index, group) {
+    // console.log(gradientXScale)
+    var candidate = selected.source.id + ", " + selected.target.id;
+    
+    gradientTooltip({ candidate: candidate, frequency: selected.value })
+}
+
+function hoverGradientBar(selected, index, group) {
+    // console.log(gradientXScale)
+    gradientTooltip(selected);
+}
+
+function hideTooltip() {
+    
+    timer = d3.timer(function waitForInput(elapsed) {
+        
+        if (elapsed > 750) {
+            var tooltip = d3.select("#currentGraph #gradientTooltip");
+
+            tooltip.transition()
+                .duration(750)
+                .style("opacity", 0.0);
+
+            timer.stop();
+        }
+    })
+}
+
+function drawGradient(frequentSets) {
+    var width = 300,
+        height = 80,
+        padding = 15;
+
+    var offset = 20;
+
+    var max = d3.max(frequentSets.map(d => d.frequency));
+    var min = 0;
+
+    gradientSvg = d3.select("#currentGraph #graphHeader")
+        .append("div")
+            .attr("id", "gradientContainer")
+            .style("width", width + offset + "px")
+            .style("height", height + "px")
+            .style("display", "inline-block")
+            .style("position", "relative")
+        .append("svg")
+            .attr("width", width + offset)
+            .attr("height", height);
+
+    var svgDefs = gradientSvg.append("defs");
+    var mainGradient = svgDefs.append("linearGradient")
+        .attr("id", "mainGradient");
+
+    for (var i = 0; i <= 100; i++) {
+        var scaleLoc = (i / 100) * max;
+
+        mainGradient.append("stop")
+            .style("stop-color", color(scaleLoc))
+            .attr("offset", (i / 100));
+    }
+
+    gradientXScale = d3.scaleLinear()
+        .domain([0, max])
+        .range([offset, width])
+        .nice();
+
+    gradientSvg.append("g")
+        .attr("transform", "translate(" + 0 + "," + ((height / 2) - padding) + ")")
+        .call(d3.axisBottom(gradientXScale).ticks(6));
+
+    gradientSvg.append("rect")
+        .classed('filled', true)
+        .attr("width", width - offset)
+        .attr("height", (height / 2) - padding)
+        .attr("y", 0)
+        .attr("x", offset);
+        // .attr("padding", padding)
+
+    d3.select("#currentGraph #gradientContainer").append("div")
+        .attr("id", "gradientTooltip")
+        .attr("class", "myTooltip")
+        .style("left", 250 + "px")
+        .style("top", 30 + "px");
+
+    d3.selectAll(".link")
+        .on("mouseover", hoverGradientEdge)
+        .on("mouseout", hideTooltip);
+}
+
 function drawGraph(graph) {
-   console.log(graph)
   
     let nodeRadius = 4;
     let nodeValues = graph.nodes.map(node => node.value)
@@ -48,7 +156,7 @@ function drawGraph(graph) {
 //        .remove();
   
 
-    var color = d3.scaleSequential(d3.interpolateYlGnBu)
+    color = d3.scaleSequential(d3.interpolateYlGnBu)
                   .domain([0, d3.max(graph.links.map(link => link.value))])
 
     var fontsize = d3.scaleLinear()
@@ -117,8 +225,6 @@ function drawGraph(graph) {
             .style("opacity", 1.0);
     
     var nodeRemove = node.exit();
-    
-    console.log(nodeRemove)
         
     nodeRemove.select("circle")
         .transition()
@@ -133,8 +239,6 @@ function drawGraph(graph) {
         .remove();
     
     nodeRemove.transition().duration(750).remove();
-
-    console.log(+svg.attr("width"))
 
     node.append("title")
         .text(function (d) { return d.id; })

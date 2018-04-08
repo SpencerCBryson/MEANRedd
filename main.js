@@ -21,19 +21,19 @@ $("#submit").click(function () {
     $("#frequent_set_list").empty()
     $("#word_list").empty()
     $("#countMsg").hide();
-    $("#graphInfo").hide();
     $("#info-row").hide();
 
     $("#msg-error").hide();
     $("#msg-box").show();
     $("#compute-spinner").show();
+    $("#currentGraph").empty();
 
     if (!graphed) {
         $("#results").show();
         $("#tabs").show();
     }
 
-    chartWidth = $("#topWords").width();
+    chartWidth = Math.max($("#topWords").width(), $("#patternResults").width(), chartWidth);
 
     // for first run
     $("#min_support").val(0.0)
@@ -141,26 +141,35 @@ function recomputeApriori() {
         if (frequentSets.length == 0) {
             setsTab();
             $("#countMsg").show();
-        }            
+        }     
+        
+        $("#graphHeader", "#currentGraph").remove()
 
         if (edgeList.length > 0) {
             var graph = generateGraph(edgeList);
             
             if (graphed) {
                 drawGraph(graph);
-                displayFrequentSets(frequentSets);
             } else {
                 initGraph(graph);
-                initFrequent(frequentSets);
             }
             graphed = true;
         }
         var s = response.data.support;
+
+        if (graphedFq) {
+            displayFrequentSets(frequentSets);
+        } else {
+            initFrequent(frequentSets);
+
+            graphedFq = true;
+        }
         
         $("#min_support").val(s.toFixed(2));
         $("#msg-box").hide();
         $("#graphInfo").show();
         $("#frequent_set_count").text(frequentSets.length);
+        drawGradient(frequentSets);
 
         runningApriori = false;
     }
@@ -184,6 +193,7 @@ $("#recompute_apriori").click(recomputeApriori);
 
 var graphGlobal = {}
 var graphed = false;
+var graphedFq = false;
 
 function generateGraph(edgeList) {
     var node_map = {};
@@ -226,27 +236,32 @@ function generateGraph(edgeList) {
 
     var graph = { nodes: nodes, links: edges }
 
-    $("#currentGraph #graphTitle").remove()
-    $("#currentGraph").prepend("<div id=\"graphTitle\"><strong>" + subreddits[0] + "</strong>: " + choice + "</div>");
+    $("#currentGraph").prepend("<div id=\"graphHeader\">"
+        + "<strong style=\"display: inline-block; vertical-align: top;\">" 
+        + subreddits[0] + ":&nbsp;"
+        + "</strong>" 
+        + "<span style=\"display: inline-block; vertical-align: top;\">" 
+        + choice + ";&nbsp;&nbsp;&nbsp"
+        + "</span>"
+        + "<strong style=\"display: inline-block; vertical-align: top;\">" 
+        + "color scale:"
+        + "</strong>"
+        + "</div>");
 
     return graph;
 }
-
-$("#drawGraph").click(function () {
-    generateGraph();
-    
-    if (!graphed) init();
-    else drawGraph(graphGlobal);
-    
-    graphed = true;
-});
 
 $("#saveGraph").click(function () {
     $("#savedGraph svg").remove();
     $("#savedGraph #graphTitle").remove();
   
     var svgcopy = $("#currentsvg").clone();
-    var titlecopy = $("#graphTitle").clone();
+    var titlecopy = $("#graphHeader").clone();
+
+    $("#mainGradient", titlecopy).attr("id", "snapGradient");
+    $("rect", titlecopy).addClass("snapFilled");
+    $("rect", titlecopy).removeClass("filled");
+    $(titlecopy).css("padding-top", "15px");
 
     $("#savedGraph").append(titlecopy);
     $("#savedGraph").append(svgcopy);
@@ -273,82 +288,8 @@ function removeWord(selection, index, group) {
             .duration(750);
 
     items.selectAll("text")
-        .attr("class", d => d.pruned ? "prunedText" : "none");
-
-
-    // d3.selectAll(".tick text")
-    //     .transition()
-    //     .attr("class", d => prunedWords.includes(d) ? "prunedText" : "none");
-    
-//    var newGraph = {};
-//    
-//    newGraph.nodes = graphGlobal.nodes.filter(d => !prunedWords.includes(d.id));
-//    newGraph.links = graphGlobal.links.filter(d => !(prunedWords.includes(d.source.id) || prunedWords.includes(d.target.id)));
-
-//    console.log(graph)
-//    console.log(newGraph)
-    
-    
+        .attr("class", d => d.pruned ? "topWordText prunedText" : "topWordText");
     
     topWordRankings = result.filter(d => !prunedWords.includes(d)).slice(0, nPosts);
     recomputeApriori();
-    
-    // console.log(d); console.log(prunedWords);
-
-    // display(topWordRankings, cookedData, combinedData);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      /* Commented out to replace with visualization
-      for(word of results) {
-        let str = '<li class="list-group-item"><strong>' + word + ':</strong> ' + (wordScores[word]).toFixed(2) + '<ul>';
-
-    let postCounts = Object.keys(data).map(sr => data[sr].length)
-
-
-    $("#msg").text("Processed " + postCounts.reduce((x, y) => x + y) + " posts");
-
-    for (word of results) {
-        let str = '<li class="list-group-item word"><strong>' + word + ':</strong> ' + (wordScores[word]).toFixed(2) + '<ul>';
-
-        for (sr of Object.keys(cookedData)) {
-            str += '<li>' + sr + ': ' + cookedData[sr].wordScores[word] + '</li>'
-        }
-
-        str += '</ul></li>';
-        $("#word_list").append(str);
-    }
-
-    $("li > ul").hide()
-
-    if (Object.keys(cookedData).length > 1) {
-        $("#contribs").show();
-
-        $("#contribs").click(function () {
-            $("li > ul").toggle()
-        });
-    }
-
-    setListener();
-
-  */

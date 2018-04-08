@@ -75,7 +75,70 @@ body {
 #frequentSetsChart {
     height: 1000px;
     overflow: auto !important;
-  }
+}
+
+.myTooltip > .tooltipText {
+    position: absolute;
+    width: 120px;
+    height: 60px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    /* position: absolute; */
+    z-index: 1;
+
+    
+}
+
+.myTooltip > .tooltipText::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent black transparent;
+}
+
+.myTooltip {
+    position: absolute;
+    display: inline-block;
+    width: 120px;
+    height: 60px;
+
+    
+
+    font-size: 12px;
+}
+
+.filled {
+    fill: url(#mainGradient);
+}
+
+.snapFilled {
+    fill: url(#snapGradient);
+}
+
+.context-bar {
+    fill: #ddd;
+}
+
+.topWordText {
+    /* color: #34bb77; */
+
+    fill: #fff;
+    font-family: sans-serif;
+    font-size: 11px;
+    z-index: 1;
+    /* text-shadow: */
+    /* -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;  */
+}
 
 .tick text{
   font-size: 14px;

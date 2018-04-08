@@ -1,7 +1,7 @@
 var prunedWords = [];
 var frequentSets = [];
-// var palette = ['#80b1d3','#bebada'];
-var palette = ['#66c2a5','#fc8d62'];
+var palette = ['#1f78b4', '#66c2a5'];
+// var palette = ['#66c2a5','#fc8d62'];
 var pruned = d3.scaleOrdinal()
         .domain([false, true])
         .range([1.0, 0.3]);
@@ -66,16 +66,12 @@ function displayFrequentSets(frequentSets) {
             .attr("class", "bar")
             .style("opacity", 0.0);
 
-    console.log(barSelection.enter())
-    console.log(barSelection.exit())
-
     bars.append("rect")
         .attr("class", "context-bar")
         .attr("x", 0)
         .attr("y", d => y(d.candidate))
         .attr("width", width)
         .attr("height", y.bandwidth())
-        .attr("fill", "#eaedf2")
         .style("z-index", -1);
 
     bars.append("rect")
@@ -85,7 +81,9 @@ function displayFrequentSets(frequentSets) {
         .attr("height", d => y.bandwidth())
         .attr("width", d => x(d.frequency))
         .style("fill", d => color(d.frequency))
-        .style("opacity", 0.7);
+        .style("opacity", 0.7)
+        .on("mouseover", hoverGradientBar)
+        .on("mouseout", hideTooltip);
 
     bars.append("text")
         .text(d => "Frequency: " + d.frequency)
@@ -131,9 +129,11 @@ function displayFrequentSets(frequentSets) {
     
     barUpdate.select(".frequency-text")
         .text(d => "Frequency: " + d.frequency)
+        .style("fill", d => (d.frequency > textCutoff) ? "white" : "black")
         .attr("y", d => y(d.candidate) + (y.bandwidth() - 5));
 
     barUpdate.select(".candidate-text")
+        .style("fill", d => (d.frequency > textCutoff) ? "white" : "black")
         .attr("y", d => y(d.candidate) + 20);
 
     // EXIT
@@ -168,6 +168,7 @@ function display(results, cookedData, combinedData) {
     $("#msg-box").hide();
 
     //Svg Attributes
+    console.log(chartWidth)
     var width = chartWidth;
     var margin = { top: 20, right: 20, bottom: 30, left: 70 };
     var bandWidth = 50;
@@ -217,7 +218,6 @@ function display(results, cookedData, combinedData) {
         .attr("y", d => y(d.word))
         .attr("width", width)
         .attr("height", y.bandwidth())
-        .attr("fill", "#eaedf2")
         .style("z-index", -1);
 
     
@@ -249,24 +249,19 @@ function display(results, cookedData, combinedData) {
         //.on("click", removeWord);
         
     bar.append("text")
-        .text(d => "Total score: " + d.value.toFixed(2))
+        .text(d => x(d.value) > 100.0 ? "Total score: " + d.value.toFixed(0) : d.value.toFixed(0))
         .attr("x", d => 5)
         .attr("y", d => y(d.word) + (y.bandwidth() - 5))
-        .style("font-family", "sans-serif")
-        .style("font-size", "10px")
-        .style("fill", "black")
+        .attr("class", "topWordText")
         .style("text-decoration", d => (d.pruned) ? "italics line-through" : "none")
-        .style("z-index", 1);
 
     bar.append("text")
         .text(d => d.word)
         .attr("x", 5)
         .attr("y", d => y(d.word) + 20)
-        .style("font-family", "sans-serif")
+        .attr("class", "topWordText")
         .style("font-size", "17px")
-        .style("fill", "black")
-        .style("text-decoration", d => (d.pruned) ? "italics line-through" : "none")
-        .style("z-index", 1);
+        .style("text-decoration", d => (d.pruned) ? "italics line-through" : "none");
 
     bar.transition()
             .duration(500)
