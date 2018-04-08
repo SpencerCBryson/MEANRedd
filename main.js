@@ -143,6 +143,9 @@ function displayPatterns(frequentSets) {
     $("#graphInfo").show();
 }
 
+var aprioriWorker = new Worker('patternAnalysis.js');
+var runningApriori = false;
+
 function recomputeApriori() {
     support = $("#min_support").val();
     support = parseFloat(support);
@@ -150,8 +153,6 @@ function recomputeApriori() {
 
     $("#msg-box").show();
     $("#msg-text").text("Recomputing Apriori...");
-    
-    var aprioriWorker = new Worker('patternAnalysis.js');
     
     function finished(response) {
         var edgeList = response.data.edgeList;
@@ -171,17 +172,25 @@ function recomputeApriori() {
         
         $("#min_support").val(s.toFixed(2));
         $("#msg-box").hide();
+
+        runningApriori = false;
     }
-    
 
-    console.log(support)
+    if (runningApriori) {
+        aprioriWorker.terminate();
+        aprioriWorker = new Worker('patternAnalysis.js');
+    }
 
+    console.log(aprioriWorker)
+
+    runningApriori = true;
     aprioriWorker.addEventListener("message", finished, false);
     aprioriWorker.postMessage({ 
         topWords: result.filter(word => !prunedWords.includes(word)).slice(0, nPosts), 
         data: data, 
         support: support
     });
+    
 }
 
 $("#recompute_apriori").click(recomputeApriori);

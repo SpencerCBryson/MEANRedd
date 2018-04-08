@@ -13,11 +13,11 @@ var width = currentDiv.clientWidth,
 //    .force("center", d3.forceCenter(width / 2, height / 2));
 
 var simulation = d3.forceSimulation() 
-            .force("charge", d3.forceManyBody().strength(-500).distanceMin(100).distanceMax(600)) 
-            .force("link", d3.forceLink().id(function(d) { return d.id }).distance(100)) 
+            .force("charge", d3.forceManyBody().strength(-500).distanceMin(150).distanceMax(500)) 
+            .force("link", d3.forceLink().id(function(d) { return d.id }).distance(150)) 
             .force("center", d3.forceCenter(width / 2, height / 2))
-            .force("y", d3.forceY(0.001))
-            .force("x", d3.forceX(0.001))
+            .force("y", d3.forceY(height / 2))
+            .force("x", d3.forceX(width / 2))
 
 function init(graph) {
     svg = d3.select(currentDiv)
@@ -62,12 +62,16 @@ function drawGraph(graph) {
     var link = d3.select("#currentGraph .links")
         .selectAll(".link")
         .data(graph.links, d => d.source.id + d.target.id);
+
+    var edgeScale = d3.scaleLinear()
+        .domain(d3.extent(graph.links.map(edge => edge.value)))
+        .range([6.0, 12.0]);
     
     link.enter()
         .append("line")
             .style("stroke-opacity", 0.0)
             .attr("class", "link")
-            .attr("stroke-width", function (d) { return d3.max( [1, Math.sqrt(d.value)] ) })
+            .attr("stroke-width", d => edgeScale(d.value))
             .style("stroke", function (d) { return color(d.value) })
         .transition()
             .duration(150)
